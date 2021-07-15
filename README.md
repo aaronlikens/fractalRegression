@@ -26,7 +26,7 @@ package to get necessary components:
 devtools::install_github("aaronlikens/fractalRegression")
 ```
 
-```
+
 
 # Citation
 
