@@ -76,10 +76,6 @@ that dataset to serve as the predictor series and person 2 (P2) to serve
 as the criterion in the multiscale regression. The two time series are
 depicted in .
 
-    ## Loading required package: crqa
-
-    ## Warning: package 'crqa' was built under R version 4.0.5
-
 ![](paper_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 ![Figure 1: Handmovement time series.](%22unnamed-chunk-1-1.png%22)
