@@ -1,0 +1,27 @@
+Package: fractalRegression
+Type: Package
+Title: Performs Fractal Analysis and Fractal Regression
+Version: 1.0
+Date: 2021-06-24
+Author: Aaron D. Likens & Travis J. Wiltshire
+  c(person(given = "Aaron",
+             family = "Likens",
+             role = c("aut", "cre"),
+             email = "alikens@unomaha.edu",
+             comment = c(ORCID = "0000-0002-6535-5772")),
+      person(given = "Travis",
+             family = "Wiltshire",
+             role = "aut",
+             comment = c(ORCID = "0000-0001-7630-2695")),
+Maintainer: Aaron D. Likens <alikens@unomaha.edu>
+Description: Various functions for performing fractal and multifractal analysis including performing fractal regression.
+License: GPL
+Depends: R (>= 3.5.0)
+Suggests: knitr, markdown, rmarkdown, ggplot2, crqa, MFDFA, fracdiff, tseries, fields, ifultools, gridExtra, qpdf
+Encoding: UTF-8
+Imports: Rcpp (>= 1.0.0)
+LazyData: true
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.1
+NeedsCompilation: yes
+Packaged: 2021-06-24 16:05:33 UTC; aaronlikens
