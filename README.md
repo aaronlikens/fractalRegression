@@ -5,11 +5,27 @@ It is built on a C++ architecture and is thus, efficient for long time series.
 
 # Installation
 
-Run the following to install the current version of the package:
 
+The fractalRegression package will soon be available on CRAN (the
+Comprehensive R Archive Network) and can then be installed using :
+<https://cran.r-project.org/package=fractalRegression>
+
+``` r
+install.packages("fractalRegression")
 ```
-install.packages("remotes")
-remotes::install_github("aaronlikens/fractalRegression")
+
+
+The development version is available on Aaron Likens’ Github
+(<https://github.com/aaronlikens/fractalRegression>) and can be
+installed using R devtools. This is a source package and requires
+compilation of C++ code. Windows users can install RTools software
+package to get necessary components:
+<https://cran.r-project.org/bin/windows/Rtools/>
+
+``` r
+devtools::install_github("aaronlikens/fractalRegression")
+```
+
 ```
 
 # Citation
@@ -24,27 +40,6 @@ If you use this package, please use the following citation.
     url = {github.com/aaronlikens/fractalRegression},
   }
  ```
- 
- ## Installation
-
-The fractalRegression package can be installed through CRAN (the
-Comprehensive R Archive Network):
-<https://cran.r-project.org/package=fractalRegression>
-
-``` r
-#install.packages("fractalRegression")
-```
-
-The development version is available on Aaron Likens’ Github
-(<https://github.com/aaronlikens/fractalRegression>) and can be
-installed using R devtools. This is a source package and requires
-compilation of C++ code. Windows users can install RTools software
-package to get necessary components:
-<https://cran.r-project.org/bin/windows/Rtools/>
-
-``` r
-#devtools::install_github("aaronlikens/fractalRegression")
-```
 
 ## Introduction
 
@@ -1242,10 +1237,8 @@ scales <- seq(15, 1000, by = 5)
 p1 = handmovement$P1_TT_d + rnorm(1, 0, .001)
 p2 = handmovement$P2_TT_d + rnorm(1, 0, .001)
 mra.out <- as.data.frame(mra(x = p1, y = p2, order = 2, scales = scales))
-# mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line()
-# mra.plot
-plot(mra.out$scales, mra.out$rho, type = 'b', pch = 16, xlab = 'Scale',
-     ylab = expression(beta))
+mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line()
+mra.plot
 ```
 
 ![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-32-1.png)
@@ -3494,4 +3487,3 @@ image.plot(x, y, mlra.out.emp$betas, axes=TRUE, legend.lab = "Beta Coefficient",
     Beyond synchrony: joint action in a complex production task reveals
     beneficial effects of decreased interpersonal synchrony. PloS one,
     11(12), e0168306.
-
