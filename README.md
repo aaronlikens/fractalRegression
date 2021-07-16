@@ -1098,8 +1098,9 @@ image.plot(x, y, mlra.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", yla
 
 ![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
+Depending on the data, it could also be nice to add contours to the plot, but it doesn't make much sense here. Regardless, some code below shows how this could be done.  
 ``` r
-#contour(x, y, mlra.out,levels=seq(0,1,by=1),add=TRUE,col='black')
+#contour(x, y, mlra.out$betas,levels=seq(0,1,by=1),add=TRUE,col='black')
 ```
 
 # An Empirical Example
