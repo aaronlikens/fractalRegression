@@ -251,9 +251,9 @@ downloader::source_url("http://staff.utia.cas.cz/kristoufek/Ladislav_Kristoufek/
 
 The MC-ARFIMA models take the form of the two equations shown below:
 
-$x_t = \\alpha \\sum^{+ \\infty}\_{n=0}a_n(d_1)\\varepsilon\_{1,t-n}+\\beta \\sum^{+ \\infty}\_{n=0}a_n(d_2)\\varepsilon\_{2,t-n}$
+$`x_t = \\alpha \\sum^{+ \\infty}\_{n=0}a_n(d_1)\\varepsilon\_{1,t-n}+\\beta \\sum^{+ \\infty}\_{n=0}a_n(d_2)\\varepsilon\_{2,t-n}`$
 
-$y_t = \\gamma \\sum^{+ \\infty}\_{n=0}a_n(d_3)\\varepsilon\_{3,t-n}+\\delta \\sum^{+ \\infty}\_{n=0}a_n(d_4)\\varepsilon\_{4,t-n}$
+$`y_t = \\gamma \\sum^{+ \\infty}\_{n=0}a_n(d_3)\\varepsilon\_{3,t-n}+\\delta \\sum^{+ \\infty}\_{n=0}a_n(d_4)\\varepsilon\_{4,t-n}`$
 
 ### Simulate some data with the MC-ARFIMA model
 
