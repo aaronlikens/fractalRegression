@@ -176,7 +176,7 @@ graphics::matplot(monofractal.fluctuations, pch=19, add=FALSE, xlab="log Scale",
 ![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 ``` r
-# @Aaron need to figure out how to add the lines here
+
 ```
 
 Now let’s compare the above plot for the monofractal and multifractal
