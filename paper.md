@@ -343,5 +343,4 @@ Applications* 390 (4): 614–18.
 
 </div>
 
-[1] Custom footnotes for e.g. denoting who the corresponding author is
-can be included like this.
+
