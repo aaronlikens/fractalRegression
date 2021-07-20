@@ -64,6 +64,8 @@ properties of natural phenomena and applied research that uses those
 insights in important areas such as healthcare (Cavanaugh,
 Kelty-Stephen, and Stergiou 2017) and education(Snow et al. 2016).
 
+# Comparison to other Packages
+
 Some foundational efforts in fractal analyses, which partially overlap
 with the functionality of this package, have been implemented elsewhere.
 For example, a number of univariate fractal and multifractal analyses
@@ -79,6 +81,8 @@ multifractal DFA with DCCA and MRA and run on a C++ architecture. Our
 `fractalRegression` package is unique in this combination of analyses,
 efficiency. For instance, we are not aware of any other packages that
 feature MRA and Multiscale Lagged Regression (MLRA).
+
+# Example
 
 In this example, we provide a brief demonstration of multiscale
 regression analysis using the ‘handmovement’ data provided in the `crqa`
