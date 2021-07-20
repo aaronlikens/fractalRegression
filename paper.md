@@ -91,7 +91,7 @@ package (Coco and Dale 2014) for R. In the study cited in that package
 wherein they built model cars while their hand movements were measured
 via accelerometers attached to the wrist. Presented below, and also in
 the
-[vignette](https://github.com/aaronlikens/fractalRegression/tree/master/vignettes)
+[vignette](https://github.com/aaronlikens/fractalRegression)
 provided with the package, are the results of applying the `mra`
 function to the bivariate time series formed from the movements of the
 collaborators dominant hands. We arbitrarily choose person 1 (P1) from
