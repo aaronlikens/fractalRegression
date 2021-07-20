@@ -1,3 +1,26 @@
+---
+title: "fractalRegression: An R package for multiscale regression and fractal analyses"
+tags: 
+  - R
+  - fractal
+  - dynamics
+  - multiscale
+authors:
+  - name: Aaron D. Likens ^[Custom footnotes for e.g. denoting who the corresponding author is can be included like this.]
+    orcid: 0000-0002-6535-5772
+    affiliation: 1
+  - name: Travis J. Wiltshire
+    orcid: 0000-0001-7630-2695
+    affiliation: 2
+affiliations:
+ - name: Department of Biomechanics, University of Nebraska at Omaha
+   index: 1
+ - name: Department of Cognitive Science & Artificial Intelligence, Tilburg University
+   index: 2
+date: 27 May 2021
+bibliography: paper.bib
+---
+
 # Summary
 
 Time series data from scientific fields as diverse as astrophysics,
@@ -41,8 +64,6 @@ properties of natural phenomena and applied research that uses those
 insights in important areas such as healthcare (Cavanaugh,
 Kelty-Stephen, and Stergiou 2017) and education(Snow et al. 2016).
 
-# Comparison to other Packages
-
 Some foundational efforts in fractal analyses, which partially overlap
 with the functionality of this package, have been implemented elsewhere.
 For example, a number of univariate fractal and multifractal analyses
@@ -58,8 +79,6 @@ multifractal DFA with DCCA and MRA and run on a C++ architecture. Our
 `fractalRegression` package is unique in this combination of analyses,
 efficiency. For instance, we are not aware of any other packages that
 feature MRA and Multiscale Lagged Regression (MLRA).
-
-# Example
 
 In this example, we provide a brief demonstration of multiscale
 regression analysis using the ‘handmovement’ data provided in the `crqa`
