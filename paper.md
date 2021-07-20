@@ -74,8 +74,8 @@ Véhel 2003) and other toolboxes that are mainly targeted at multifractal
 analysis (Ihlen and Vereijken 2010; Ihlen et al. 2012). In terms of open
 access packages, there are other packages that implement some, but not
 all of the same functions such as the `fathon` package (Bianchi 2020)
-that has been implemented in Python as well as the R packages: `fractal`
-\[@\], `nonlinearTseries` (Garcia 2020), and `MFDFA` (Laib et al. 2018).
+that has been implemented in Python as well as the R packages: deprecated `fractal`
+package, `nonlinearTseries` (Garcia 2020), and `MFDFA` (Laib et al. 2018).
 However, none of the above packages incorporate monofractal and
 multifractal DFA with DCCA and MRA and run on a C++ architecture. Our
 `fractalRegression` package is unique in this combination of analyses,
@@ -118,7 +118,7 @@ and support this expectation.
 ![Figure 2: MRA plot of handmovement time
 series.](%22paper_files\figure_markdown_github\unnamed-chunk-2-1.png%22)
 
-In particular, note that *β*(*s*) are very close to zero at small
+In particular, note that $\beta$(*s*) are very close to zero at small
 scales, but becomes increasingly negative at larger time scales, as
 anticipated from visual inspection of the time series. And, one would
 expect DCCA to produce similar results (see vignette).
@@ -126,7 +126,7 @@ expect DCCA to produce similar results (see vignette).
 In summary, this `fractalRegression` package collects older univariate
 and bivariate techniques into a single, efficient package that can be
 installed directly from the CRAN network or github. We anticipate this
-software will be of benefit to many across many scientific disciplines.
+software will be of benefit to scientists across many disciplines.
 
 # Acknowledgements
 
