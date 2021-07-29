@@ -9,7 +9,7 @@ dfa(x, order, verbose, sc_min, sc_max, scale_ratio)
 \arguments{
 \item{x}{A real valued vector (i.e., time series data) to be analyzed.}
 
-\item{order}{is an integer indicating the polynomial order used for 
+\item{order}{An integer indicating the polynomial order used for 
 detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 is not a pre-determined limit on the order of the polynomial order but the 
 user should avoid using a large polynomial on small windows. This can result
@@ -25,6 +25,14 @@ returned as well as the \eqn{\alpha} or when = 0 only the estimated scaling expo
 \item{scale_ratio}{A scaling factor by which to create successive window sizes from `sc_min` to `sc_max`. 
 This allows one to to maintain even spacing in logarithms while increasing
 scale resolution.}
+}
+\value{
+The object returned can take the following forms:
+\itemize{ 
+ \item If the value of verbose = 1, then a list object is returned that includes: \code{logScales}
+the log of all included scales, \code{logRMS} the log root mean square error (RMS) per scale, and \code{alpha} the overall \eqn{\alpha} estimate.
+ \item If the value of verbose = 0, then a list containing only `alpha` the estimated scaling exponent \eqn{\alpha} will be returned.
+}
 }
 \description{
 Fast function for computing detrended fluctuation analysis (DFA), a widely used method for estimating long-range temporal correlations in time series data. 
@@ -52,18 +60,11 @@ While it is common to use only linear detrending with DFA, it is important to in
 if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders (see Kantelhardt et al., 2001).
 
 General recommendations for choosing the min and max scale are an sc_min = 10 and sc_max = (N/4), where N is the number of observations.
-See Eke et al. (2002) and Gulich and Zunino (2014) for additional considerations. 
-
-The object returned from the function will include the following:
-\itemize{ 
- \item If the value of verbose = 1, then a list object is returned that includes
-the log of all included scales, the log root mean square error (RMS) per scale, and the overall \eqn{\alpha} estimate.
- \item If the value of verbose = 0, then only the estimated scaling exponent \eqn{\alpha} will be returned.
-}
+See Eke et al. (2002) and Gulich and Zunino (2014) for additional considerations.
 }
 \examples{
 
-\dontrun{
+
 
 noise <- rnorm(5000)
 
@@ -96,7 +97,7 @@ dfa.anticorr.out <- dfa(
     scale_ratio = 2)
 
 
-}
+
 
 }
 \references{

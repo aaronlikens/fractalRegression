@@ -17,7 +17,7 @@ int countUnique(NumericVector y);
 //' DFA is also a form of mono-fractal analysis that indicates the degree of self-similarity across temporal scales.
 //' 
 //' @param x A real valued vector (i.e., time series data) to be analyzed. 
-//' @param order is an integer indicating the polynomial order used for 
+//' @param order An integer indicating the polynomial order used for 
 //' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 //' is not a pre-determined limit on the order of the polynomial order but the 
 //' user should avoid using a large polynomial on small windows. This can result
@@ -56,11 +56,11 @@ int countUnique(NumericVector y);
 //' General recommendations for choosing the min and max scale are an sc_min = 10 and sc_max = (N/4), where N is the number of observations.
 //' See Eke et al. (2002) and Gulich and Zunino (2014) for additional considerations. 
 //' 
-//' The object returned from the function will include the following:
+//' @return The object returned can take the following forms:
 //' \itemize{ 
-//'  \item If the value of verbose = 1, then a list object is returned that includes
-//' the log of all included scales, the log root mean square error (RMS) per scale, and the overall \eqn{\alpha} estimate.
-//'  \item If the value of verbose = 0, then only the estimated scaling exponent \eqn{\alpha} will be returned.
+//'  \item If the value of verbose = 1, then a list object is returned that includes: \code{logScales}
+//' the log of all included scales, \code{logRMS} the log root mean square error (RMS) per scale, and \code{alpha} the overall \eqn{\alpha} estimate.
+//'  \item If the value of verbose = 0, then a list containing only `alpha` the estimated scaling exponent \eqn{\alpha} will be returned.
 //' }
 //' @references 
 //' 
@@ -80,7 +80,7 @@ int countUnique(NumericVector y);
 //' 
 //' @examples
 //' 
-//' \dontrun{
+//' 
 //' 
 //' noise <- rnorm(5000)
 //' 
@@ -113,7 +113,7 @@ int countUnique(NumericVector y);
 //'     scale_ratio = 2)
 //' 
 //' 
-//' }
+//' 
 //' 
 // [[Rcpp::export]]
 List dfa(NumericVector x, int order, int verbose, double sc_min, 

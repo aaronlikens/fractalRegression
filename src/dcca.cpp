@@ -43,10 +43,10 @@ arma::vec cumsum(arma::vec x);
 //'  \item \eqn{\rho DCCA =  1.0 ->} perfect cross-correlation
 //' } 
 //'
-//' The object returned from the function will include the following:
+//' @return The object returned from the function is a list including the following:
 //' \itemize{ 
-//'  \item `scales` indicates the values of the scales used for estimates \eqn{\rho}DCCA
-//'  \item `rho` are the scale-wise estimates of \eqn{\rho}DCCA
+//'  \item \code{scales} indicates the values of the scales used for estimates \eqn{\rho}DCCA
+//'  \item \code{rho} includes the scale-wise estimates of \eqn{\rho}DCCA
 //' }
 //'
 //' @references
@@ -59,7 +59,7 @@ arma::vec cumsum(arma::vec x);
 //' @examples
 //' 
 //'
-//' \dontrun{
+//' 
 //' # Here is a simple example for running DCCA using a white noise and pink noise time series.
 //' # For more detailed examples, see the vignette. 
 //' 
@@ -71,7 +71,7 @@ arma::vec cumsum(arma::vec x);
 //' 
 //' dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 //' 
-//' }
+//' 
 //'
 // [[Rcpp::export]]
 List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales){

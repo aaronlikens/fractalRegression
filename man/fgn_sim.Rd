@@ -2,7 +2,7 @@
 % Please edit documentation in R/fgn_sim.R
 \name{fgn_sim}
 \alias{fgn_sim}
-\title{Simulate fractional Gaussian Noise}
+\title{Simulate fractional Gaussian Noise.}
 \usage{
 fgn_sim(n = 1000, H = 0.7)
 }
@@ -11,6 +11,9 @@ fgn_sim(n = 1000, H = 0.7)
 
 \item{H}{Hurst exponent ranges between 0 and 1}
 }
+\value{
+A numeric vector of length n.
+}
 \description{
-Simulate fractional Gaussian Noise
+Simulate fractional Gaussian Noise.
 }

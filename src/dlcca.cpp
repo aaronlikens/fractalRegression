@@ -23,6 +23,9 @@ arma::mat Detrend_Var(arma::mat x, int order);
 //' @import Rcpp
 //' @useDynLib fractalRegression
 //' @export
+//' 
+//' @return The object returned from the dlcca() function is a list containing rho coefficients for each lag at each of the scales. 
+//'
 //[[Rcpp::export]]
 arma::mat dlcca(arma::vec x, arma::vec y, int order, IntegerVector scales,
           int lags, char direction){

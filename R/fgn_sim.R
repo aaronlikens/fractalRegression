@@ -1,10 +1,11 @@
 # this software was taken from the now defunct R package
 # fArma.  
 
-#' Simulate fractional Gaussian Noise
+#' Simulate fractional Gaussian Noise.
 #' @param n integer indicating length of desired series
 #' @param H Hurst exponent ranges between 0 and 1
 #' @importFrom stats fft rnorm
+#' @return A numeric vector of length n.
 #' @export
 fgn_sim <- 
     function(n = 1000, H = 0.7)

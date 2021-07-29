@@ -34,10 +34,10 @@
 #'  \item \eqn{\rho DCCA =  1.0 ->} perfect cross-correlation
 #' } 
 #'
-#' The object returned from the function will include the following:
+#' @return The object returned from the function is a list including the following:
 #' \itemize{ 
-#'  \item `scales` indicates the values of the scales used for estimates \eqn{\rho}DCCA
-#'  \item `rho` are the scale-wise estimates of \eqn{\rho}DCCA
+#'  \item \code{scales} indicates the values of the scales used for estimates \eqn{\rho}DCCA
+#'  \item \code{rho} includes the scale-wise estimates of \eqn{\rho}DCCA
 #' }
 #'
 #' @references
@@ -50,7 +50,7 @@
 #' @examples
 #' 
 #'
-#' \dontrun{
+#' 
 #' # Here is a simple example for running DCCA using a white noise and pink noise time series.
 #' # For more detailed examples, see the vignette. 
 #' 
@@ -62,7 +62,7 @@
 #' 
 #' dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 #' 
-#' }
+#' 
 #'
 dcca <- function(x, y, order, scales) {
     .Call('_fractalRegression_dcca', PACKAGE = 'fractalRegression', x, y, order, scales)
@@ -74,7 +74,7 @@ dcca <- function(x, y, order, scales) {
 #' DFA is also a form of mono-fractal analysis that indicates the degree of self-similarity across temporal scales.
 #' 
 #' @param x A real valued vector (i.e., time series data) to be analyzed. 
-#' @param order is an integer indicating the polynomial order used for 
+#' @param order An integer indicating the polynomial order used for 
 #' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 #' is not a pre-determined limit on the order of the polynomial order but the 
 #' user should avoid using a large polynomial on small windows. This can result
@@ -113,11 +113,11 @@ dcca <- function(x, y, order, scales) {
 #' General recommendations for choosing the min and max scale are an sc_min = 10 and sc_max = (N/4), where N is the number of observations.
 #' See Eke et al. (2002) and Gulich and Zunino (2014) for additional considerations. 
 #' 
-#' The object returned from the function will include the following:
+#' @return The object returned can take the following forms:
 #' \itemize{ 
-#'  \item If the value of verbose = 1, then a list object is returned that includes
-#' the log of all included scales, the log root mean square error (RMS) per scale, and the overall \eqn{\alpha} estimate.
-#'  \item If the value of verbose = 0, then only the estimated scaling exponent \eqn{\alpha} will be returned.
+#'  \item If the value of verbose = 1, then a list object is returned that includes: \code{logScales}
+#' the log of all included scales, \code{logRMS} the log root mean square error (RMS) per scale, and \code{alpha} the overall \eqn{\alpha} estimate.
+#'  \item If the value of verbose = 0, then a list containing only `alpha` the estimated scaling exponent \eqn{\alpha} will be returned.
 #' }
 #' @references 
 #' 
@@ -137,7 +137,7 @@ dcca <- function(x, y, order, scales) {
 #' 
 #' @examples
 #' 
-#' \dontrun{
+#' 
 #' 
 #' noise <- rnorm(5000)
 #' 
@@ -170,7 +170,7 @@ dcca <- function(x, y, order, scales) {
 #'     scale_ratio = 2)
 #' 
 #' 
-#' }
+#' 
 #' 
 dfa <- function(x, order, verbose, sc_min, sc_max, scale_ratio) {
     .Call('_fractalRegression_dfa', PACKAGE = 'fractalRegression', x, order, verbose, sc_min, sc_max, scale_ratio)
@@ -190,6 +190,9 @@ dfa <- function(x, order, verbose, sc_min, sc_max, scale_ratio) {
 #' @import Rcpp
 #' @useDynLib fractalRegression
 #' @export
+#' 
+#' @return The object returned from the dlcca() function is a list containing rho coefficients for each lag at each of the scales. 
+#'
 dlcca <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_dlcca', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }
@@ -223,21 +226,22 @@ dlcca <- function(x, y, order, scales, lags, direction) {
 #' such as when time series are short (< 3000), it can be appropriate to limit the range of q to positive only. Kelty-Stephen et al. (2016) recommend a 
 #' positive q range of 0.5 to 10 with an increment of 0.5. 
 #'
-#' The output of the algorithm is a list that includes:
-#' \itemize{ 
-#'  \item log2scale: The log2 scales used for the analysis
-#'  \item log2Fq: The log2 of the fluctuation functions for each scale and q 
-#'  \item Hq: The q-order Hurst exponent (generalized Hurst exponent)
-#'  \item Tau: The q-order mass exponent
-#'  \item q: The q-order statistical moments
-#'  \item h: The q-order singularity exponent
-#'  \item Dh: The dimension of the q-order singularity exponent
-#'}
 #' While it is common to use only linear detrending with DFA and MF-DFA, it is important to inspect the trends in the data to determine
 #' if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA and MF-DFA output for different polynomial orders (see Ihlen, 2012; Kantelhardt et al., 2001).
 #' 
 #' General recommendations for choosing the min and max scale are a scale_min = 10 and scale_max = (N/4), where N is the number of observations.
 #' See Eke et al. (2002), Gulich and Zunino (2014), Ihlen (2012), and  for additional considerations and information on choosing the correct parameters. 
+#'
+#' @return The output of the algorithm is a list that includes:
+#' \itemize{ 
+#'  \item \code{log2scale} The log2 scales used for the analysis
+#'  \item \code{log2Fq} The log2 of the fluctuation functions for each scale and q 
+#'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
+#'  \item \code{Tau} The q-order mass exponent
+#'  \item \code{q} The q-order statistical moments
+#'  \item \code{h} The q-order singularity exponent
+#'  \item \code{Dh} The dimension of the q-order singularity exponent
+#'}
 #'
 #' @references 
 #'
@@ -253,7 +257,7 @@ dlcca <- function(x, y, order, scales, lags, direction) {
 #'
 #' @examples
 #'
-#' \dontrun{
+#' 
 #' 
 #' noise <- rnorm(5000)
 #' 
@@ -274,7 +278,7 @@ dlcca <- function(x, y, order, scales, lags, direction) {
 #'     scale_max = length(pink.noise)/4, 
 #'     scale_ratio = 2)
 #'
-#' }
+#' 
 #' 
 mfdfa <- function(x, q, order, scale_min, scale_max, scale_ratio) {
     .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scale_min, scale_max, scale_ratio)
@@ -318,7 +322,7 @@ colmeans <- function(X) {
 #' Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
 #' Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
 #'
-#' The object returned from the mlra() function is a list with the the \eqn{\beta} coefficients for each lag at each of the scales. 
+#' @return The object returned from the mlra() function is a list containing \code{betas} the \eqn{\beta} coefficients for each lag at each of the scales. 
 #'
 #'
 #' @references
@@ -329,7 +333,7 @@ colmeans <- function(X) {
 #'
 #' @examples
 #'
-#' \dontrun{
+#' 
 #' # Here is a simple example for running MLRA using a white noise and pink noise time series.
 #' # For more detailed examples, see the vignette. 
 #' 
@@ -345,7 +349,7 @@ colmeans <- function(X) {
 #'     order = 1, 
 #'     scales = scales, 
 #'     lags = 100, direction = 'p')
-#' }
+#' 
 #'
 #'
 mlra <- function(x, y, order, scales, lags, direction) {
@@ -400,12 +404,12 @@ detrend_var <- function(X, order) {
 #' Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
 #' Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
 #'
-#' The object returned from the mra() function will include the following:
+#' @return The object returned from the mra() function is a list including the following:
 #' \itemize{ 
-#'  \item `scales` indicates the values of the scales used for estimates
-#'  \item `betas` are the scale specific \eqn{\beta} estimates of the influence of x on y
-#'  \item `r2` is the scale specific r-squared value of the model fit (i.e., variance in y accounted for by x at that scale)
-#'  \item `t_observed` is the estimated t-statistic for a given \eqn{\beta} at a given scale. 
+#'  \item \code{scales} indicates the values of the scales used for estimates
+#'  \item \code{betas} are the scale specific \eqn{\beta} estimates of the influence of x on y
+#'  \item \code{r2} is the scale specific r-squared value of the model fit (i.e., variance in y accounted for by x at that scale)
+#'  \item \code{t_observed} is the estimated t-statistic for a given \eqn{\beta} at a given scale. 
 #' }
 #'
 #'
@@ -417,7 +421,7 @@ detrend_var <- function(X, order) {
 #'
 #' @examples
 #'
-#' \dontrun{
+#' 
 #' # Here is a simple example for running MRA using a white noise and pink noise time series.
 #' # For more detailed examples, see the vignette. 
 #' 
@@ -428,7 +432,7 @@ detrend_var <- function(X, order) {
 #' scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.1)
 #' 
 #' mra.out <- mra(x = noise, y = pink.noise, order = 1, scales = scales)
-#' }
+#' 
 #'
 #'
 mra <- function(x, y, order, scales) {

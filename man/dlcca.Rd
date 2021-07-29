@@ -23,6 +23,9 @@ logarithm base between 1 and 2 may also improve performance of regression.}
 
 \item{direction}{string indicating a positive ('p') or negative ('n') lag}
 }
+\value{
+The object returned from the dlcca() function is a list containing rho coefficients for each lag at each of the scales.
+}
 \description{
 Multiscale Lagged Regression Anlaysis
 Fast function for computing MRA on long time series

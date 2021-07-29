@@ -27,6 +27,13 @@ smaller than say 8 observations create stability problems due to
 overfitting. This is espcially when the order of the fitting polynomial is 
 large.}
 }
+\value{
+The object returned from the function is a list including the following:
+\itemize{ 
+ \item \code{scales} indicates the values of the scales used for estimates \eqn{\rho}DCCA
+ \item \code{rho} includes the scale-wise estimates of \eqn{\rho}DCCA
+}
+}
 \description{
 Fast function for computing detrended cross-correlation analysis (DCCA) on long time series, which is a 
 bivariate extension of detrended fluctuation analysis (DFA).
@@ -38,18 +45,12 @@ In general, the output of the algorithm are estimates of \eqn{\rho}DCCA, which r
  \item \eqn{\rho DCCA = -1.0 ->} perfect anti-cross-correlation
  \item \eqn{\rho DCCA =  0.0 ->} no cross-correlation
  \item \eqn{\rho DCCA =  1.0 ->} perfect cross-correlation
-} 
-
-The object returned from the function will include the following:
-\itemize{ 
- \item `scales` indicates the values of the scales used for estimates \eqn{\rho}DCCA
- \item `rho` are the scale-wise estimates of \eqn{\rho}DCCA
 }
 }
 \examples{
 
 
-\dontrun{
+
 # Here is a simple example for running DCCA using a white noise and pink noise time series.
 # For more detailed examples, see the vignette. 
 
@@ -61,7 +62,7 @@ scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.
 
 dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 
-}
+
 
 }
 \references{

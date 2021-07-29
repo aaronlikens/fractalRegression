@@ -26,6 +26,18 @@ in overfitting and non-meaningful estimates.}
 This allows one to to maintain even spacing in logarithms while increasing
 scale resolution.}
 }
+\value{
+The output of the algorithm is a list that includes:
+\itemize{ 
+ \item \code{log2scale} The log2 scales used for the analysis
+ \item \code{log2Fq} The log2 of the fluctuation functions for each scale and q 
+ \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
+ \item \code{Tau} The q-order mass exponent
+ \item \code{q} The q-order statistical moments
+ \item \code{h} The q-order singularity exponent
+ \item \code{Dh} The dimension of the q-order singularity exponent
+}
+}
 \description{
 Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 
 MF-DFA is also a form of multifractal analysis that indicates the degree of interaction across temporal scales.
@@ -38,16 +50,6 @@ Selecting the range of values for q is important. Note that MF-DFA estimates for
 such as when time series are short (< 3000), it can be appropriate to limit the range of q to positive only. Kelty-Stephen et al. (2016) recommend a 
 positive q range of 0.5 to 10 with an increment of 0.5. 
 
-The output of the algorithm is a list that includes:
-\itemize{ 
- \item log2scale: The log2 scales used for the analysis
- \item log2Fq: The log2 of the fluctuation functions for each scale and q 
- \item Hq: The q-order Hurst exponent (generalized Hurst exponent)
- \item Tau: The q-order mass exponent
- \item q: The q-order statistical moments
- \item h: The q-order singularity exponent
- \item Dh: The dimension of the q-order singularity exponent
-}
 While it is common to use only linear detrending with DFA and MF-DFA, it is important to inspect the trends in the data to determine
 if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA and MF-DFA output for different polynomial orders (see Ihlen, 2012; Kantelhardt et al., 2001).
 
@@ -56,7 +58,7 @@ See Eke et al. (2002), Gulich and Zunino (2014), Ihlen (2012), and  for addition
 }
 \examples{
 
-\dontrun{
+
 
 noise <- rnorm(5000)
 
@@ -77,7 +79,7 @@ mf.dfa.pink.out <- mfdfa(
     scale_max = length(pink.noise)/4, 
     scale_ratio = 2)
 
-}
+
 
 }
 \references{

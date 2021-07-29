@@ -39,21 +39,22 @@ int which_value(NumericVector x, double value); //find the first index where a v
 //' such as when time series are short (< 3000), it can be appropriate to limit the range of q to positive only. Kelty-Stephen et al. (2016) recommend a 
 //' positive q range of 0.5 to 10 with an increment of 0.5. 
 //'
-//' The output of the algorithm is a list that includes:
-//' \itemize{ 
-//'  \item log2scale: The log2 scales used for the analysis
-//'  \item log2Fq: The log2 of the fluctuation functions for each scale and q 
-//'  \item Hq: The q-order Hurst exponent (generalized Hurst exponent)
-//'  \item Tau: The q-order mass exponent
-//'  \item q: The q-order statistical moments
-//'  \item h: The q-order singularity exponent
-//'  \item Dh: The dimension of the q-order singularity exponent
-//'}
 //' While it is common to use only linear detrending with DFA and MF-DFA, it is important to inspect the trends in the data to determine
 //' if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA and MF-DFA output for different polynomial orders (see Ihlen, 2012; Kantelhardt et al., 2001).
 //' 
 //' General recommendations for choosing the min and max scale are a scale_min = 10 and scale_max = (N/4), where N is the number of observations.
 //' See Eke et al. (2002), Gulich and Zunino (2014), Ihlen (2012), and  for additional considerations and information on choosing the correct parameters. 
+//'
+//' @return The output of the algorithm is a list that includes:
+//' \itemize{ 
+//'  \item \code{log2scale} The log2 scales used for the analysis
+//'  \item \code{log2Fq} The log2 of the fluctuation functions for each scale and q 
+//'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
+//'  \item \code{Tau} The q-order mass exponent
+//'  \item \code{q} The q-order statistical moments
+//'  \item \code{h} The q-order singularity exponent
+//'  \item \code{Dh} The dimension of the q-order singularity exponent
+//'}
 //'
 //' @references 
 //'
@@ -69,7 +70,7 @@ int which_value(NumericVector x, double value); //find the first index where a v
 //'
 //' @examples
 //'
-//' \dontrun{
+//' 
 //' 
 //' noise <- rnorm(5000)
 //' 
@@ -90,7 +91,7 @@ int which_value(NumericVector x, double value); //find the first index where a v
 //'     scale_max = length(pink.noise)/4, 
 //'     scale_ratio = 2)
 //'
-//' }
+//' 
 //' 
 // [[Rcpp::export]]
 List mfdfa(NumericVector x, NumericVector q, int order, double scale_min, 

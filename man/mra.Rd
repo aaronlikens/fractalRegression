@@ -33,6 +33,15 @@ smaller than say 8 observations create stability problems due to
 overfitting. This is espcially when the order of the fitting polynomial is 
 large.}
 }
+\value{
+The object returned from the mra() function is a list including the following:
+\itemize{ 
+ \item \code{scales} indicates the values of the scales used for estimates
+ \item \code{betas} are the scale specific \eqn{\beta} estimates of the influence of x on y
+ \item \code{r2} is the scale specific r-squared value of the model fit (i.e., variance in y accounted for by x at that scale)
+ \item \code{t_observed} is the estimated t-statistic for a given \eqn{\beta} at a given scale. 
+}
+}
 \description{
 Fast function for computing multiscale regression analysis (MRA) on long time series. Combining DFA with ordinary least square regression, MRA
 is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables.
@@ -41,19 +50,11 @@ is a form of fractal regression that can be used to estimate asymmetric and mult
 Mathematical treatment of the MRA algorithm and its performance can be found in Kristoufek (2015) and Likens et al. (2019).
 
 Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
-Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
-
-The object returned from the mra() function will include the following:
-\itemize{ 
- \item `scales` indicates the values of the scales used for estimates
- \item `betas` are the scale specific \eqn{\beta} estimates of the influence of x on y
- \item `r2` is the scale specific r-squared value of the model fit (i.e., variance in y accounted for by x at that scale)
- \item `t_observed` is the estimated t-statistic for a given \eqn{\beta} at a given scale. 
-}
+Using a polynomial detrending order of 2 or greater was shown to attenuate this bias.
 }
 \examples{
 
-\dontrun{
+
 # Here is a simple example for running MRA using a white noise and pink noise time series.
 # For more detailed examples, see the vignette. 
 
@@ -64,7 +65,7 @@ pink.noise <- fgn_sim(n = 5000, H = 0.9)
 scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.1)
 
 mra.out <- mra(x = noise, y = pink.noise, order = 1, scales = scales)
-}
+
 
 
 }

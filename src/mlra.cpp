@@ -43,7 +43,7 @@ arma::mat detrend_var(arma::mat x, int order);
 //' Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
 //' Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
 //'
-//' The object returned from the mlra() function is a list with the the \eqn{\beta} coefficients for each lag at each of the scales. 
+//' @return The object returned from the mlra() function is a list containing \code{betas} the \eqn{\beta} coefficients for each lag at each of the scales. 
 //'
 //'
 //' @references
@@ -54,7 +54,7 @@ arma::mat detrend_var(arma::mat x, int order);
 //'
 //' @examples
 //'
-//' \dontrun{
+//' 
 //' # Here is a simple example for running MLRA using a white noise and pink noise time series.
 //' # For more detailed examples, see the vignette. 
 //' 
@@ -70,7 +70,7 @@ arma::mat detrend_var(arma::mat x, int order);
 //'     order = 1, 
 //'     scales = scales, 
 //'     lags = 100, direction = 'p')
-//' }
+//' 
 //'
 //'
 //[[Rcpp::export]]

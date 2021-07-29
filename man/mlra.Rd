@@ -31,6 +31,9 @@ large.}
 
 \item{direction}{A character string indicating a positive ('p') or negative ('n') lag.}
 }
+\value{
+The object returned from the mlra() function is a list containing \code{betas} the \eqn{\beta} coefficients for each lag at each of the scales.
+}
 \description{
 Fast function for computing multiscale lagged regression analysis (MLRA) on long time series. Combining DFA with ordinary least square regression, MLRA
 is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables at different time-scales and temporal lags.
@@ -41,13 +44,11 @@ Mathematical treatment of the MLRA algorithm and its performance can be found in
 Use of the direction parameter specifies whether the scale-wise \eqn{\beta} coefficients for positive or negative lags will be estimated.  
 
 Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
-Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
-
-The object returned from the mlra() function is a list with the the \eqn{\beta} coefficients for each lag at each of the scales.
+Using a polynomial detrending order of 2 or greater was shown to attenuate this bias.
 }
 \examples{
 
-\dontrun{
+
 # Here is a simple example for running MLRA using a white noise and pink noise time series.
 # For more detailed examples, see the vignette. 
 
@@ -63,7 +64,7 @@ mlra.out <- mlra(
     order = 1, 
     scales = scales, 
     lags = 100, direction = 'p')
-}
+
 
 
 }
