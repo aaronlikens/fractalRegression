@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // dcca
 List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales);
 RcppExport SEXP _fractalRegression_dcca(SEXP xSEXP, SEXP ySEXP, SEXP orderSEXP, SEXP scalesSEXP) {
