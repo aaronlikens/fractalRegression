@@ -3,6 +3,7 @@
 export(dcca)
 export(dfa)
 export(dlcca)
+export(fftw_fft)
 export(fgn_sim)
 export(mfdfa)
 export(mlra)

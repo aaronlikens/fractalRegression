@@ -20,7 +20,7 @@ Suggests: knitr, markdown, rmarkdown, ggplot2, crqa, MFDFA, fracdiff, tseries, f
 Encoding: UTF-8
 Imports: Rcpp (>= 1.0.0)
 LazyData: true
-LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.1
+LinkingTo: Rcpp, RcppArmadillo, RcppEigen
+RoxygenNote: 7.1.2
 NeedsCompilation: yes
 Packaged: 2021-11-04 16:05:33 UTC; aaronlikens
