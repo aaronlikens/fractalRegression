@@ -197,26 +197,6 @@ dlcca <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_dlcca', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }
 
-#' Fastest Fourier Transform in the west
-#' A simple 1D implementation of the FFTW and its inverse
-#' @param in_vec a real or complex valued vector.
-#' @param type is a character with two values, 'f' = forward, 'i' = inverse
-#' @import Rcpp
-#' @useDynLib fractalRegression
-#' @export
-#' @return returns a complex valued 1D FFT
-fftw_fft <- function(in_vec, fft_type) {
-    .Call('_fractalRegression_fftw_fft', PACKAGE = 'fractalRegression', in_vec, fft_type)
-}
-
-iaafft_cpp <- function(signal, N, max_iter) {
-    .Call('_fractalRegression_iaafft_cpp', PACKAGE = 'fractalRegression', signal, N, max_iter)
-}
-
-make_complex <- function(x) {
-    .Call('_fractalRegression_make_complex', PACKAGE = 'fractalRegression', x)
-}
-
 #' Multifractal Detrended Fluctuation Analysis
 #'
 #' Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 

@@ -58,42 +58,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// fftw_fft
-arma::cx_vec fftw_fft(arma::cx_colvec in_vec, char fft_type);
-RcppExport SEXP _fractalRegression_fftw_fft(SEXP in_vecSEXP, SEXP fft_typeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::cx_colvec >::type in_vec(in_vecSEXP);
-    Rcpp::traits::input_parameter< char >::type fft_type(fft_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(fftw_fft(in_vec, fft_type));
-    return rcpp_result_gen;
-END_RCPP
-}
-// iaafft_cpp
-arma::mat iaafft_cpp(arma::vec signal, int N, int max_iter);
-RcppExport SEXP _fractalRegression_iaafft_cpp(SEXP signalSEXP, SEXP NSEXP, SEXP max_iterSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type signal(signalSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(iaafft_cpp(signal, N, max_iter));
-    return rcpp_result_gen;
-END_RCPP
-}
-// make_complex
-arma::cx_vec make_complex(arma::vec x);
-RcppExport SEXP _fractalRegression_make_complex(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(make_complex(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mfdfa
 List mfdfa(NumericVector x, NumericVector q, int order, double scale_min, double scale_max, double scale_ratio);
 RcppExport SEXP _fractalRegression_mfdfa(SEXP xSEXP, SEXP qSEXP, SEXP orderSEXP, SEXP scale_minSEXP, SEXP scale_maxSEXP, SEXP scale_ratioSEXP) {
@@ -192,9 +156,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fractalRegression_dcca", (DL_FUNC) &_fractalRegression_dcca, 4},
     {"_fractalRegression_dfa", (DL_FUNC) &_fractalRegression_dfa, 6},
     {"_fractalRegression_dlcca", (DL_FUNC) &_fractalRegression_dlcca, 6},
-    {"_fractalRegression_fftw_fft", (DL_FUNC) &_fractalRegression_fftw_fft, 2},
-    {"_fractalRegression_iaafft_cpp", (DL_FUNC) &_fractalRegression_iaafft_cpp, 3},
-    {"_fractalRegression_make_complex", (DL_FUNC) &_fractalRegression_make_complex, 1},
     {"_fractalRegression_mfdfa", (DL_FUNC) &_fractalRegression_mfdfa, 6},
     {"_fractalRegression_colmeans", (DL_FUNC) &_fractalRegression_colmeans, 1},
     {"_fractalRegression_mlra", (DL_FUNC) &_fractalRegression_mlra, 6},
