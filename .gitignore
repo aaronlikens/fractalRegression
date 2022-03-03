@@ -3,5 +3,13 @@
 .RData
 .Ruserdata
 .DS_Store
-*.o
+mra.o
+dcca.o
+dlcca.o
+mfdfa.o
+mlra.o
+dfa.o
+RcppExports.o
+fractaRegression.dll
+fractalRegression.o
 
