@@ -68,7 +68,7 @@ dcca <- function(x, y, order, scales) {
     .Call('_fractalRegression_dcca', PACKAGE = 'fractalRegression', x, y, order, scales)
 }
 
-#' Detrended Fluctuation Anlaysis
+#' Detrended Fluctuation Analysis
 #' 
 #' Fast function for computing detrended fluctuation analysis (DFA), a widely used method for estimating long-range temporal correlations in time series data. 
 #' DFA is also a form of mono-fractal analysis that indicates the degree of self-similarity across temporal scales.
@@ -79,13 +79,17 @@ dcca <- function(x, y, order, scales) {
 #' is not a pre-determined limit on the order of the polynomial order but the 
 #' user should avoid using a large polynomial on small windows. This can result
 #' in overfitting and non-meaningful estimates. 
-#' @param verbose A logical that when = 1 indicates that the flucuation function including the log of all included scales as well as the log Rms should be 
-#' returned as well as the \eqn{\alpha} or when = 0 only the estimated scaling exponent \eqn{\alpha} will be returned.
-#' @param sc_min The minimum window size, specified in the number of data points (i.e., observations) to be included in the smallest window. 
-#' @param sc_max The maximum window size, specified in the number of data points (i.e., observations) to be included in the largest window.
-#' @param scale_ratio A scaling factor by which to create successive window sizes from `sc_min` to `sc_max`. 
-#' This allows one to to maintain even spacing in logarithms while increasing
-#' scale resolution.
+#' @param scales An integer valued vector indicating the scales one wishes to resolve
+#' in the analysis. Best practice is to use scales which are evenly spaced in 
+#' the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+#' time series. Other, logarithmic bases may also be used to give finer 
+#' resolution of scales while maintaining ~= spacing in the log domain e.g, 
+#' scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+#' produce duplicate values after the necessary floor function.
+#' @param scale_ratio A scaling factor by which successive window sizes were 
+#' were created. The default is 2 but should be addressed according to how 
+#' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+#' where 1.1 is the scale ratio.
 #' @import Rcpp
 #' @useDynLib fractalRegression
 #' @export
@@ -168,12 +172,12 @@ dcca <- function(x, y, order, scales) {
 #'     sc_min = 16, 
 #'     sc_max = length(anticorr.noise)/4, 
 #'     scale_ratio = 2)
+#'   
 #' 
 #' 
 #' 
-#' 
-dfa <- function(x, order, verbose, sc_min, sc_max, scale_ratio) {
-    .Call('_fractalRegression_dfa', PACKAGE = 'fractalRegression', x, order, verbose, sc_min, sc_max, scale_ratio)
+dfa <- function(x, order, verbose, scales, scale_ratio = 2) {
+    .Call('_fractalRegression_dfa', PACKAGE = 'fractalRegression', x, order, verbose, scales, scale_ratio)
 }
 
 #' Multiscale Lagged Regression Anlaysis
@@ -197,6 +201,10 @@ dlcca <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_dlcca', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }
 
+poly_residuals <- function(yr, m) {
+    .Call('_fractalRegression_poly_residuals', PACKAGE = 'fractalRegression', yr, m)
+}
+
 #' Multifractal Detrended Fluctuation Analysis
 #'
 #' Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 
@@ -210,11 +218,13 @@ dlcca <- function(x, y, order, scales, lags, direction) {
 #' is not pre-determined limit on the order of the polynomial order but the 
 #' user should avoid using a large polynomial on small windows. This can result
 #' in overfitting and non-meaningful estimates. 
-#' @param scale_min An integer indicating the minimum window size, specified in the number of data points (i.e., observations) to be included in the smallest window. 
-#' @param scale_max An integer indicating the maximum window size, specified in the number of data points (i.e., observations) to be included in the largest window. indicating largest scale to resolve
-#' @param scale_ratio A scaling factor by which to create successive window sizes from `scale_min` to `scale_max`. 
-#' This allows one to to maintain even spacing in logarithms while increasing
-#' scale resolution.
+#' @param scales An integer valued vector indicating the scales one wishes to resolve
+#' in the analysis. Best practice is to use scales which are evenly spaced in 
+#' the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+#' time series. Other, logarithmic bases may also be used to give finer 
+#' resolution of scales while maintaining ~= spacing in the log domain e.g, 
+#' scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+#' produce duplicate values after the necessary floor function.
 #' @import Rcpp
 #' @useDynLib fractalRegression
 #' @export
@@ -280,12 +290,8 @@ dlcca <- function(x, y, order, scales, lags, direction) {
 #'
 #' 
 #' 
-mfdfa <- function(x, q, order, scale_min, scale_max, scale_ratio) {
-    .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scale_min, scale_max, scale_ratio)
-}
-
-colmeans <- function(X) {
-    .Call('_fractalRegression_colmeans', PACKAGE = 'fractalRegression', X)
+mfdfa <- function(x, q, order, scales) {
+    .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scales)
 }
 
 #' Multiscale Lagged Regression Analysis
@@ -437,5 +443,9 @@ detrend_var <- function(X, order) {
 #'
 mra <- function(x, y, order, scales) {
     .Call('_fractalRegression_mra', PACKAGE = 'fractalRegression', x, y, order, scales)
+}
+
+seq_int <- function(length) {
+    .Call('_fractalRegression_seq_int', PACKAGE = 'fractalRegression', length)
 }
 

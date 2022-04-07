@@ -4,7 +4,7 @@
 \alias{mfdfa}
 \title{Multifractal Detrended Fluctuation Analysis}
 \usage{
-mfdfa(x, q, order, scale_min, scale_max, scale_ratio)
+mfdfa(x, q, order, scales)
 }
 \arguments{
 \item{x}{A real valued vector (i.e., time series data) to be analyzed.}
@@ -18,13 +18,13 @@ is not pre-determined limit on the order of the polynomial order but the
 user should avoid using a large polynomial on small windows. This can result
 in overfitting and non-meaningful estimates.}
 
-\item{scale_min}{An integer indicating the minimum window size, specified in the number of data points (i.e., observations) to be included in the smallest window.}
-
-\item{scale_max}{An integer indicating the maximum window size, specified in the number of data points (i.e., observations) to be included in the largest window. indicating largest scale to resolve}
-
-\item{scale_ratio}{A scaling factor by which to create successive window sizes from `scale_min` to `scale_max`. 
-This allows one to to maintain even spacing in logarithms while increasing
-scale resolution.}
+\item{scales}{An integer valued vector indicating the scales one wishes to resolve
+in the analysis. Best practice is to use scales which are evenly spaced in 
+the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+time series. Other, logarithmic bases may also be used to give finer 
+resolution of scales while maintaining ~= spacing in the log domain e.g, 
+scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+produce duplicate values after the necessary floor function.}
 }
 \value{
 The output of the algorithm is a list that includes:

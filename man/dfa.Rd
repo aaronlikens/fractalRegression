@@ -2,9 +2,9 @@
 % Please edit documentation in R/RcppExports.R
 \name{dfa}
 \alias{dfa}
-\title{Detrended Fluctuation Anlaysis}
+\title{Detrended Fluctuation Analysis}
 \usage{
-dfa(x, order, verbose, sc_min, sc_max, scale_ratio)
+dfa(x, order, verbose, scales, scale_ratio = 2)
 }
 \arguments{
 \item{x}{A real valued vector (i.e., time series data) to be analyzed.}
@@ -15,16 +15,18 @@ is not a pre-determined limit on the order of the polynomial order but the
 user should avoid using a large polynomial on small windows. This can result
 in overfitting and non-meaningful estimates.}
 
-\item{verbose}{A logical that when = 1 indicates that the flucuation function including the log of all included scales as well as the log Rms should be 
-returned as well as the \eqn{\alpha} or when = 0 only the estimated scaling exponent \eqn{\alpha} will be returned.}
+\item{scales}{An integer valued vector indicating the scales one wishes to resolve
+in the analysis. Best practice is to use scales which are evenly spaced in 
+the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+time series. Other, logarithmic bases may also be used to give finer 
+resolution of scales while maintaining ~= spacing in the log domain e.g, 
+scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+produce duplicate values after the necessary floor function.}
 
-\item{sc_min}{The minimum window size, specified in the number of data points (i.e., observations) to be included in the smallest window.}
-
-\item{sc_max}{The maximum window size, specified in the number of data points (i.e., observations) to be included in the largest window.}
-
-\item{scale_ratio}{A scaling factor by which to create successive window sizes from `sc_min` to `sc_max`. 
-This allows one to to maintain even spacing in logarithms while increasing
-scale resolution.}
+\item{scale_ratio}{A scaling factor by which successive window sizes were 
+were created. The default is 2 but should be addressed according to how 
+scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+where 1.1 is the scale ratio.}
 }
 \value{
 The object returned can take the following forms:
@@ -95,7 +97,7 @@ dfa.anticorr.out <- dfa(
     sc_min = 16, 
     sc_max = length(anticorr.noise)/4, 
     scale_ratio = 2)
-
+  
 
 
 

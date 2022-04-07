@@ -29,6 +29,7 @@
 #'
 #'
 #'
+#' @export
 
 
 mBm_mGn <- function(N,Ht){

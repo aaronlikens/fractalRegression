@@ -1,17 +1,10 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
+#include "lmc.h"
 using namespace Rcpp;
 
-//detrending function that returns the sum of squared residuals
-double polyDetrend(NumericVector yr, int m);
 
-//simple linear regression
-arma::colvec lmC(NumericVector xs, NumericVector ys);
-
-//count the unique elements in a vector
-int countUnique(NumericVector y);
-
-//' Detrended Fluctuation Anlaysis
+//' Detrended Fluctuation Analysis
 //' 
 //' Fast function for computing detrended fluctuation analysis (DFA), a widely used method for estimating long-range temporal correlations in time series data. 
 //' DFA is also a form of mono-fractal analysis that indicates the degree of self-similarity across temporal scales.
@@ -22,13 +15,17 @@ int countUnique(NumericVector y);
 //' is not a pre-determined limit on the order of the polynomial order but the 
 //' user should avoid using a large polynomial on small windows. This can result
 //' in overfitting and non-meaningful estimates. 
-//' @param verbose A logical that when = 1 indicates that the flucuation function including the log of all included scales as well as the log Rms should be 
-//' returned as well as the \eqn{\alpha} or when = 0 only the estimated scaling exponent \eqn{\alpha} will be returned.
-//' @param sc_min The minimum window size, specified in the number of data points (i.e., observations) to be included in the smallest window. 
-//' @param sc_max The maximum window size, specified in the number of data points (i.e., observations) to be included in the largest window.
-//' @param scale_ratio A scaling factor by which to create successive window sizes from `sc_min` to `sc_max`. 
-//' This allows one to to maintain even spacing in logarithms while increasing
-//' scale resolution.
+//' @param scales An integer valued vector indicating the scales one wishes to resolve
+//' in the analysis. Best practice is to use scales which are evenly spaced in 
+//' the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+//' time series. Other, logarithmic bases may also be used to give finer 
+//' resolution of scales while maintaining ~= spacing in the log domain e.g, 
+//' scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+//' produce duplicate values after the necessary floor function.
+//' @param scale_ratio A scaling factor by which successive window sizes were 
+//' were created. The default is 2 but should be addressed according to how 
+//' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+//' where 1.1 is the scale ratio.
 //' @import Rcpp
 //' @useDynLib fractalRegression
 //' @export
@@ -111,143 +108,64 @@ int countUnique(NumericVector y);
 //'     sc_min = 16, 
 //'     sc_max = length(anticorr.noise)/4, 
 //'     scale_ratio = 2)
-//' 
+//'   
 //' 
 //' 
 //' 
 // [[Rcpp::export]]
-List dfa(NumericVector x, int order, int verbose, double sc_min, 
-         double sc_max, double scale_ratio ){
+List dfa(arma::vec x, int order, arma::uword verbose, 
+             arma::uvec scales, double scale_ratio = 2){
     
-    double len = x.size();
-    double scale_min = sc_min;
-    double scale_max = sc_max;
-    int numberOfScales = ceil(log(scale_max/scale_min)/log(scale_ratio));
-    NumericVector resid(numberOfScales);
-    NumericVector X = cumsum(x-mean(x));
-    
-    //create a logarithmiclly spaced vector of scales, contains duplicates
-    NumericVector scales(numberOfScales);
-    scales[0] = sc_min;
-    for ( int i = 1; i < numberOfScales; ++i){
-        scales[i] = scales[i-1]*scale_ratio;
-    }
-    //TODO (AARON): Find a way to sort the scales from lower to higher values
-    scales = unique(floor(scales));
+    double len = x.n_elem;
+    arma::uword number_of_scales = scales.n_elem;
+    arma::vec resid(number_of_scales);
+    arma::vec X = cumsum(x-mean(x));
     
     // do the detrending and return the RMSE for each of the ith scales
-    NumericVector RMS(numberOfScales);
+    arma::vec RMS(number_of_scales);
     
-    for ( int i = 0; i < numberOfScales; ++i){
-        int window = scales[i];
-        int count = 0;
-        IntegerVector indx = seq_len(window);
-        indx = indx-1;
-        int numberOfBlocks = floor(len/window);
-        for ( int j = 0; j < numberOfBlocks; ++j){
-            RMS[i] = RMS[i] + polyDetrend(X[indx], order);
+    for (arma::uword i = 0; i < number_of_scales; ++i){
+        arma::uword window = scales[i];
+        arma::uword count = 0;
+        arma::uvec indx = seq_int(window);
+        // indx = indx-1;
+        arma::uword number_of_blocks = floor(len/window);
+        for ( arma::uword j = 0; j < number_of_blocks; ++j){
+            RMS(i) = RMS(i) + arma::accu(arma::pow(poly_residuals(X.rows(indx), 
+                                         order),2));
             count = count + 1;
             indx = indx + window;
         }
         
-        RMS[i] = sqrt(RMS[i]/(count*window));
+        RMS(i) = sqrt(RMS(i)/(count*window));
+
     }
     
     
     //take the logm of scales and RMS
-    NumericVector logScale(numberOfScales);
-
-    logScale = log(scales)/log(scale_ratio);
-    NumericVector logRms(numberOfScales);
-    logRms = log(RMS)/log(scale_ratio);
+    arma::vec log_scale(number_of_scales);
+    arma::vec log_rms(number_of_scales);
+    if (abs(scale_ratio-2)<.00001){
+      log_scale = arma::log2(arma::conv_to<arma::vec>::from(scales));
+      log_rms = arma::log2(RMS);
+    }else{
+      log_scale = log(arma::conv_to<arma::vec>::from(scales))/log(scale_ratio);
+      log_rms = log(RMS)/log(scale_ratio);
+    }
 
     //compute scaling coefficient
-    arma::colvec alpha = lmC(logScale,logRms);
+    arma::colvec alpha = lm_c(log_scale,log_rms);
     
     //create a list of output and return it
     if(verbose == 0){
         return List::create(Named("alpha") = alpha(1));
     }else{
-        return List::create(Named("logScales") = logScale, Named("logRms")=logRms, Named("alpha") = alpha(1));
+        return List::create(Named("log_scales") = log_scale, Named("log_rms")=log_rms, Named("alpha") = alpha(1));
     }
 }
 
-//detrending function that returns the sum of squared residuals
-double polyDetrend(NumericVector yr, int m){
-    int rows = yr.size();
-    int cols = m + 1;
-    arma::colvec coef(cols);
-    
-    arma::mat x(rows,cols);
-    
-    //convert data to an armadillo vector
-    arma::colvec y(yr.begin(), yr.size(), false);
-    
-    //allocate memor for x and power of x vectors
-    arma::colvec t1(rows);
-    for ( int i = 0; i < rows; i++){
-        t1(i) = i;
-    }
-    t1 = t1 - mean(t1);
-    for ( int i = 0; i < cols; ++i){
-        x.col(i) = arma::pow(t1,i);
-    }
-    
-    coef = solve(x,y);
-    
-    NumericVector coefs(coef.begin(),coef.end());
-    
-    arma::colvec resid = y-x*coef;
-    
-    NumericVector Resid = NumericVector(resid.begin(),resid.end());
-    
-    //square and sum the residuals
-    double ssResid = 0;
-    for (int i = 0; i < rows; i ++){
-        ssResid = ssResid + pow(Resid(i),2);
-    }
-    
-    return ssResid;
-}
-
-//simple linear regression
-arma::colvec lmC(NumericVector xs, NumericVector ys){
-    NumericVector yr = ys;
-    int n = yr.size();
-    
-    NumericVector Ones(n,1.0);
-    NumericMatrix augmentedX(n,2);
-    augmentedX(_,0) = Ones;
-    augmentedX(_,1) = xs;
-    
-    arma::mat x(augmentedX.begin(), n, 2, false);
-    arma::colvec y(yr.begin(), yr.size(), false);
-    //arma::colvec w = 1/arma::linspace(1,n,n);
-    //compute regression coefficients
-    arma::colvec coef = solve(x,y);
-    
-    return coef;
-}
 
 
-// count the unique elements in a vector
-int countUnique(NumericVector y) {
-    NumericVector x = clone(y);
-    std::sort(x.begin(), x.end());
-    int count = 0;
-    if (x[0] == x[1]){
-        count += 1;
-    }
-    
-    double diffx = 0.0;
-    for ( int i = 1; i < x.size(); ++i){
-        diffx = x[i] - x[i-1];
-        if (diffx != 0){
-            count +=1;
-        }
-    }
-    
-    return count;
-}
 
-//written by Aaron Likens (2019)
+
+//written by Aaron Likens (2022)

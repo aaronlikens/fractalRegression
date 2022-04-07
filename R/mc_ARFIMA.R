@@ -75,6 +75,7 @@
 #'
 #' lines(sim1[,2], col='blue')
 #'
+#' @export
 
 
 mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL,beta=NULL,delta=NULL,gamma=NULL,theta=NULL,theta1=NULL,theta2=NULL){
