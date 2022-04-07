@@ -1,19 +1,10 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
+#include "lmc.h"
 using namespace Rcpp;
 
-// these functions perform the DFA based regression introduced in:
-// Kristoufek, L. (2015). 
 
-// functions for doing the detrending covariance. Returns the sum of mean squared 
-// DFA residuals and the covariance by scale
-arma::vec detrend_cov(arma::vec x, arma::vec y, int m);
-double detrendVar(arma::vec xr, int m);
-
-//function for cumulative sums
-arma::vec cumsum(arma::vec x);
-
-//' Multiscale Regression Anlaysis (MRA)
+//' Multiscale Regression Analysis (MRA)
 //'
 //' Fast function for computing multiscale regression analysis (MRA) on long time series. Combining DFA with ordinary least square regression, MRA
 //' is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables. 
@@ -84,8 +75,10 @@ arma::vec cumsum(arma::vec x);
 List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
     int N = x.n_elem;
     double len = x.n_elem;
-    int numberOfScales = scales.n_elem;
-    arma::vec resid(numberOfScales);
+    int number_of_scales = scales.n_elem;
+    arma::vec resid(number_of_scales);
+    arma::uword start = 0;
+    arma::uword stop = 0;
     
     // create the profiles
     arma::vec X = cumsum(x-mean(x));
@@ -95,52 +88,54 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
     // i.e., equations 4 - 8 in Kritoufek (2015).
      
     // scale by scale detrended variance in x
-    arma::vec f2x(numberOfScales);
+    arma::vec f2x(number_of_scales);
 
     // scale by scale detrended variance in y
-    arma::vec f2y(numberOfScales);
+    arma::vec f2y(number_of_scales);
 
     // scale by scale covariance
-    arma::vec f2xy(numberOfScales);
+    arma::vec f2xy(number_of_scales);
 
     // error term scale by scale fluctuation
-    arma::vec f2u(numberOfScales);
+    arma::vec f2u(number_of_scales);
 
     //scale by scale error term, uhat_t(s)
     arma::vec ut(X.n_elem);
 
     //scale by scale R^2 values
-    arma::vec r2(numberOfScales);
+    arma::vec r2(number_of_scales);
 
     //scale by scale regression coefficients
-    arma::vec betas(numberOfScales);
+    arma::vec betas(number_of_scales);
 
     // standard error of scale by regression coefficient
-    arma::vec se_betas(numberOfScales);
+    arma::vec se_betas(number_of_scales);
 
     // t-observed for the scale by scale regression coefficients
-    arma::vec t_observed(numberOfScales);
+    arma::vec t_observed(number_of_scales);
 
     
     // Main loop for detrending and calculating the fluctuation functions
-    for ( int i = 0; i < numberOfScales; i++){
+    for ( int i = 0; i < number_of_scales; i++){
         //choose window size
         int window = scales[i];
         //re-/initialize variables to hold input for a given scale
         int count = 0;
         arma::ivec indx = seq_len(window);
         indx = indx-1;
-        arma::vec varCov(2);
-        // std::fill(varCov.begin(),varCov.end(),0);
-        int numberOfBlocks = floor(len/window);
+        arma::vec var_cov(2);
+        // std::fill(var_cov.begin(),var_cov.end(),0);
+        int number_of_blocks = floor(len/window);
         
-        for ( int j = 0; j < numberOfBlocks; ++j){
-            varCov = detrend_cov(X.subvec(indx(0), size(indx)), 
-                                 Y.subvec(indx(0), size(indx)),
+        for ( int j = 0; j < number_of_blocks; ++j){
+            start = indx(0);
+            stop = indx(indx.n_elem-1);
+            var_cov = detrend_cov(X.subvec(start, stop),
+                                 Y.subvec(start, stop),
                                  order);
-            f2x[i] = f2x[i] + varCov[0];
-            f2y[i] = f2y[i] + varCov[1];
-            f2xy[i] = f2xy[i] + varCov[2];
+            f2x[i] = f2x[i] + var_cov[0];
+            f2y[i] = f2y[i] + var_cov[1];
+            f2xy[i] = f2xy[i] + var_cov[2];
             count = count + 1;
             indx = indx + window;
         }
@@ -149,22 +144,23 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
         f2y[i] = f2y[i]/(N-window);
         f2xy[i] = f2xy[i]/(N-window);
         betas[i] = f2xy[i]/f2x[i]; // scale-wise regression coefficient
-        //betasYX = f2xy[i]/f2y[i];
         ut = Y - X*betas[i] - mean(Y-X*betas[i]);
+        
         // //compute R^2 within each window and get an average
         indx = seq_len(window);
         indx = indx-1;
+        
         //double beta = betas[i];
-        for (int j = 0; j < numberOfBlocks; ++j){
-            
-            f2u[i] = f2u[i] + detrendVar(ut.subvec(indx(0), size(indx)), order);
-            count = count + 1;
+        for (int j = 0; j < number_of_blocks; ++j){
+          start = indx(0);
+          stop = indx(indx.n_elem-1);
+            f2u[i] = f2u[i] + arma::accu(arma::pow(poly_residuals(ut.subvec(start, stop), order),2))/indx.n_elem-1;
             indx = indx + window;
         }
         f2u[i] = f2u[i]/(N-window);
         se_betas[i] = sqrt(f2u[i]/(f2x[i]*(window-1)));
         t_observed[i] = betas[i]/se_betas[i];
-        r2[i] = 1 - f2u[i]/f2y[i]; // scale wise 
+        r2[i] = 1 - (f2u[i]/f2y[i]); // scale wise 
         
                 
     }
@@ -172,91 +168,6 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
     return List::create(Named("scales") = scales, Named("betas") = betas,
                         Named("r2") = r2, Named("t_observed") = t_observed);
 }
-
-
-// function for doing the detrending. Returns the sum of squared residuals.
-arma::vec detrend_cov(arma::vec x, arma::vec y, int m){
-    int rows = x.n_elem;
-    int cols = m + 1;
-    arma::colvec coefx(cols);
-    arma::colvec coefy(cols);
-    
-    arma::mat t(rows,cols);
-
-    
-    //allocate memor for x and power of x vectors
-    arma::colvec t1(rows);
-    for ( int i = 0; i < rows; i++){
-        t1(i) = i+1;
-    }
-    //t1 = t1 - mean(t1);
-    for ( int i = 0; i < cols; ++i){
-        t.col(i) = arma::pow(t1,i);
-    }
-    
-    // fit regression line
-    coefx = solve(t,x);
-    coefy = solve(t,y);
-    
-    // find residuals
-    arma::colvec residx = x-t*coefx;
-    arma::colvec residy = y-t*coefy;
-    
-    //square and sum the residuals
-    double f2xy = 0;
-    double f2x = 0;
-    double f2y = 0;
-
-    // find RMS and Covariance
-    f2x = arma::accu(pow(residx,2))/(x.n_elem-1);
-    f2y = arma::accu(pow(residy,2)/(x.n_elem-1));
-    f2xy = arma::accu(residx % residy/(x.n_elem-1));
-
-    arma::vec varCovar(3);
-    varCovar[0] = f2x;
-    varCovar[1] = f2y;
-    varCovar[2] = f2xy;
-    
-
-    return varCovar;
-}
-
-// function for doing the detrending. Returns the sum of squared residuals.
-double detrendVar(arma::vec x, int m){
-    int rows = x.n_elem;
-    int cols = m + 1;
-    arma::colvec coefx(cols);
-    arma::colvec coefy(cols);
-    
-    arma::mat t(rows,cols);
-    
-    //allocate memor for x and power of x vectors
-    arma::colvec t1(rows);
-    for ( int i = 0; i < rows; i++){
-        t1(i) = i+1;
-    }
-    //t1 = t1 - mean(t1);
-    for ( int i = 0; i < cols; ++i){
-        t.col(i) = arma::pow(t1,i);
-    }
-    
-    // fit regression
-    coefx = solve(t,x);
-    
-    // find residuals
-    arma::colvec residx = x-t*coefx;
-    
-    //square and sum the residuals
-
-    double f2x = 0;
-    f2x = arma::accu(pow(residx,2))/(x.n_elem-1);
-    
-    return f2x;
-}
-
-
-
-
 
 
 //written by Aaron Likens (2019)

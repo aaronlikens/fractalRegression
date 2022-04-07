@@ -205,6 +205,18 @@ poly_residuals <- function(yr, m) {
     .Call('_fractalRegression_poly_residuals', PACKAGE = 'fractalRegression', yr, m)
 }
 
+lm_c <- function(xs, yr) {
+    .Call('_fractalRegression_lm_c', PACKAGE = 'fractalRegression', xs, yr)
+}
+
+seq_int <- function(length) {
+    .Call('_fractalRegression_seq_int', PACKAGE = 'fractalRegression', length)
+}
+
+detrend_cov <- function(x, y, m) {
+    .Call('_fractalRegression_detrend_cov', PACKAGE = 'fractalRegression', x, y, m)
+}
+
 #' Multifractal Detrended Fluctuation Analysis
 #'
 #' Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 
@@ -374,7 +386,7 @@ detrend_var <- function(X, order) {
     .Call('_fractalRegression_detrend_var', PACKAGE = 'fractalRegression', X, order)
 }
 
-#' Multiscale Regression Anlaysis (MRA)
+#' Multiscale Regression Analysis (MRA)
 #'
 #' Fast function for computing multiscale regression analysis (MRA) on long time series. Combining DFA with ordinary least square regression, MRA
 #' is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables. 
@@ -443,9 +455,5 @@ detrend_var <- function(X, order) {
 #'
 mra <- function(x, y, order, scales) {
     .Call('_fractalRegression_mra', PACKAGE = 'fractalRegression', x, y, order, scales)
-}
-
-seq_int <- function(length) {
-    .Call('_fractalRegression_seq_int', PACKAGE = 'fractalRegression', length)
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{mra}
 \alias{mra}
-\title{Multiscale Regression Anlaysis (MRA)}
+\title{Multiscale Regression Analysis (MRA)}
 \usage{
 mra(x, y, order, scales)
 }

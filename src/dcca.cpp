@@ -1,14 +1,8 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
+#include "lmc.h"
 using namespace Rcpp;
-
-
-// functions for doing the detrending covariance. Returns the sum of mean 
-// squared DFA residuals and the covariance by scale
-arma::vec detrendCov(arma::vec x, arma::vec y, int m);
     
-//function for cumulative sums
-arma::vec cumsum(arma::vec x);
 
 //' Detrended Cross-Correlation Analysis
 //'
@@ -79,6 +73,8 @@ List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales){
     double len = x.n_elem;
     int numberOfScales = scales.n_elem;
     arma::vec resid(numberOfScales);
+    arma::uword start = 0;
+    arma::uword stop = 0;
     
     // create the profiles
     arma::vec X = cumsum(x-mean(x));
@@ -117,9 +113,14 @@ List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales){
         int numberOfBlocks = floor(len/window);
         
         for ( int j = 0; j < numberOfBlocks; ++j){
-            // varCov = detrendCov(X[indx],Y[indx],order);
-            varCov = detrendCov(X.subvec(indx(0), size(indx)), Y.subvec(indx(0),
-                                   size(indx)), order);
+            // varCov = detrend_cov(X[indx],Y[indx],order);
+            // varCov = detrend_cov(X.subvec(indx(0), size(indx)), Y.subvec(indx(0),
+            //                        size(indx)), order);
+            start = indx(0);
+            stop = indx(indx.n_elem-1);
+            varCov = detrend_cov(X.subvec(start, stop),
+                               Y.subvec(start, stop),
+                               order);
             f2x[i] = f2x[i] + varCov[0];
             f2y[i] = f2y[i] + varCov[1];
             f2xy[i] = f2xy[i] + varCov[2];
@@ -141,58 +142,6 @@ List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales){
     return List::create(Named("scales") = scales, Named("rho") = rho);
 }
 
-
-// function for doing the detrending. Returns the sum of squared residuals.
-arma::vec detrendCov(arma::vec x, arma::vec y, int m){
-    int rows = x.n_elem;
-    int cols = m + 1;
-    arma::colvec coefx(cols);
-    arma::colvec coefy(cols);
-    
-    arma::mat t(rows,cols);
-    
-    //convert data to an armadillo vector
-    // arma::colvec x(xr.begin(), xr.n_elem, false);
-    // arma::colvec y(yr.begin(), yr.n_elem, false);
-    
-    //allocate memory for x and power of x vectors
-    arma::colvec t1(rows);
-    for ( int i = 0; i < rows; i++){
-        t1(i) = i+1;
-    }
-    //t1 = t1 - mean(t1);
-    for ( int i = 0; i < cols; ++i){
-        t.col(i) = arma::pow(t1,i);
-    }
-    
-    // fit regression equation
-    coefx = solve(t,x);
-    coefy = solve(t,y);
-    
-    // find residuals
-    arma::colvec residx = x-t*coefx;
-    arma::colvec residy = y-t*coefy;
-    
-    
-    //square and sum the residuals
-    double f2xy = 0;
-    double f2x = 0;
-    double f2y = 0;
-
-    // find RMS and Covariance
-    f2x = arma::accu(pow(residx,2))/(x.n_elem-1);
-    f2y = arma::accu(pow(residy,2)/(x.n_elem-1));
-    f2xy = arma::accu(residx % residy/(x.n_elem-1));
-
-    // prepare output vector
-    arma::vec varCovar(3);
-    varCovar[0] = f2x;
-    varCovar[1] = f2y;
-    varCovar[2] = f2xy;
-    
-
-    return varCovar;
-}
 
 
 

@@ -69,6 +69,42 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lm_c
+arma::vec lm_c(arma::vec xs, arma::vec yr);
+RcppExport SEXP _fractalRegression_lm_c(SEXP xsSEXP, SEXP yrSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type xs(xsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type yr(yrSEXP);
+    rcpp_result_gen = Rcpp::wrap(lm_c(xs, yr));
+    return rcpp_result_gen;
+END_RCPP
+}
+// seq_int
+arma::uvec seq_int(arma::uword length);
+RcppExport SEXP _fractalRegression_seq_int(SEXP lengthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type length(lengthSEXP);
+    rcpp_result_gen = Rcpp::wrap(seq_int(length));
+    return rcpp_result_gen;
+END_RCPP
+}
+// detrend_cov
+arma::vec detrend_cov(arma::vec x, arma::vec y, int m);
+RcppExport SEXP _fractalRegression_detrend_cov(SEXP xSEXP, SEXP ySEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(detrend_cov(x, y, m));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mfdfa
 List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales);
 RcppExport SEXP _fractalRegression_mfdfa(SEXP xSEXP, SEXP qSEXP, SEXP orderSEXP, SEXP scalesSEXP) {
@@ -149,30 +185,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// seq_int
-arma::uvec seq_int(arma::uword length);
-RcppExport SEXP _fractalRegression_seq_int(SEXP lengthSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::uword >::type length(lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(seq_int(length));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fractalRegression_dcca", (DL_FUNC) &_fractalRegression_dcca, 4},
     {"_fractalRegression_dfa", (DL_FUNC) &_fractalRegression_dfa, 5},
     {"_fractalRegression_dlcca", (DL_FUNC) &_fractalRegression_dlcca, 6},
     {"_fractalRegression_poly_residuals", (DL_FUNC) &_fractalRegression_poly_residuals, 2},
+    {"_fractalRegression_lm_c", (DL_FUNC) &_fractalRegression_lm_c, 2},
+    {"_fractalRegression_seq_int", (DL_FUNC) &_fractalRegression_seq_int, 1},
+    {"_fractalRegression_detrend_cov", (DL_FUNC) &_fractalRegression_detrend_cov, 3},
     {"_fractalRegression_mfdfa", (DL_FUNC) &_fractalRegression_mfdfa, 4},
     {"_fractalRegression_mlra", (DL_FUNC) &_fractalRegression_mlra, 6},
     {"_fractalRegression_lagn", (DL_FUNC) &_fractalRegression_lagn, 2},
     {"_fractalRegression_polyfit", (DL_FUNC) &_fractalRegression_polyfit, 2},
     {"_fractalRegression_detrend_var", (DL_FUNC) &_fractalRegression_detrend_var, 2},
     {"_fractalRegression_mra", (DL_FUNC) &_fractalRegression_mra, 4},
-    {"_fractalRegression_seq_int", (DL_FUNC) &_fractalRegression_seq_int, 1},
     {NULL, NULL, 0}
 };
 
