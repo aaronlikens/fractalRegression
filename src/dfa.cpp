@@ -15,12 +15,17 @@ using namespace Rcpp;
 //' is not a pre-determined limit on the order of the polynomial order but the 
 //' user should avoid using a large polynomial on small windows. This can result
 //' in overfitting and non-meaningful estimates. 
+//' @param verbose If the value of verbose = 1, then a list object is returned 
+//' that includes: \code{logScales} the log of all included scales, 
+//' \code{logRMS} the log root mean square error (RMS) per scale, 
+//' and \code{alpha} the overall \eqn{\alpha} estimate. If the value of 
+//' verbose = 0, then a list containing only `alpha` will be returned.
 //' @param scales An integer valued vector indicating the scales one wishes to resolve
 //' in the analysis. Best practice is to use scales which are evenly spaced in 
-//' the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+//' the logarithmic domain e.g., \code{scales = 2^(4:(N/4))}, where N is the length of the
 //' time series. Other, logarithmic bases may also be used to give finer 
 //' resolution of scales while maintaining ~= spacing in the log domain e.g, 
-//' scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+//' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 //' produce duplicate values after the necessary floor function.
 //' @param scale_ratio A scaling factor by which successive window sizes were 
 //' were created. The default is 2 but should be addressed according to how 
@@ -80,13 +85,14 @@ using namespace Rcpp;
 //' 
 //' 
 //' noise <- rnorm(5000)
-//' 
+//'
+//' scales <- c(16,32,64,128,256,512,1024)
+//
 //' dfa.noise.out <- dfa(
 //'     x = noise, 
 //'     order = 1, 
 //'     verbose = 1, 
-//'     sc_min = 16, 
-//'     sc_max = length(noise)/4, 
+//'     scales = scales,
 //'     scale_ratio = 2)
 //' 
 //' pink.noise <- fgn_sim(n = 5000, H = 0.9)
@@ -95,8 +101,7 @@ using namespace Rcpp;
 //'     x = pink.noise, 
 //'     order = 1, 
 //'     verbose = 1, 
-//'     sc_min = 16, 
-//'     sc_max = length(pink.noise)/4, 
+//'     scales = scales, 
 //'     scale_ratio = 2)
 //' 
 //' anticorr.noise <- fgn_sim(n = 5000, H = 0.25)
@@ -105,8 +110,7 @@ using namespace Rcpp;
 //'     x = anticorr.noise, 
 //'     order = 1, 
 //'     verbose = 1, 
-//'     sc_min = 16, 
-//'     sc_max = length(anticorr.noise)/4, 
+//'     scales = scales, 
 //'     scale_ratio = 2)
 //'   
 //' 
