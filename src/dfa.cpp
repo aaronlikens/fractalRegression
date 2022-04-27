@@ -16,8 +16,8 @@ using namespace Rcpp;
 //' user should avoid using a large polynomial on small windows. This can result
 //' in overfitting and non-meaningful estimates. 
 //' @param verbose If the value of verbose = 1, then a list object is returned 
-//' that includes: \code{logScales} the log of all included scales, 
-//' \code{logRMS} the log root mean square error (RMS) per scale, 
+//' that includes: \code{log_scales} the log of all included scales, 
+//' \code{log_rms} the log root mean square error (RMS) per scale, 
 //' and \code{alpha} the overall \eqn{\alpha} estimate. If the value of 
 //' verbose = 0, then a list containing only `alpha` will be returned.
 //' @param scales An integer valued vector indicating the scales one wishes to resolve
@@ -60,8 +60,8 @@ using namespace Rcpp;
 //' 
 //' @return The object returned can take the following forms:
 //' \itemize{ 
-//'  \item If the value of verbose = 1, then a list object is returned that includes: \code{logScales}
-//' the log of all included scales, \code{logRMS} the log root mean square error (RMS) per scale, and \code{alpha} the overall \eqn{\alpha} estimate.
+//'  \item If the value of verbose = 1, then a list object is returned that includes: \code{log_scales}
+//' the log of all included scales, \code{log_rms} the log root mean square error (RMS) per scale, and \code{alpha} the overall \eqn{\alpha} estimate.
 //'  \item If the value of verbose = 0, then a list containing only `alpha` the estimated scaling exponent \eqn{\alpha} will be returned.
 //' }
 //' @references 
