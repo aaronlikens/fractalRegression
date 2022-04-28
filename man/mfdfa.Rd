@@ -29,8 +29,8 @@ produce duplicate values after the necessary floor function.}
 \value{
 The output of the algorithm is a list that includes:
 \itemize{ 
- \item \code{log2scale} The log2 scales used for the analysis
- \item \code{log2Fq} The log2 of the fluctuation functions for each scale and q 
+ \item \code{log_scale} The log2 scales used for the analysis
+ \item \code{log_fq} The log2 of the fluctuation functions for each scale and q 
  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
  \item \code{Tau} The q-order mass exponent
  \item \code{q} The q-order statistical moments

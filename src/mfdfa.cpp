@@ -43,8 +43,8 @@ using namespace Rcpp;
 //'
 //' @return The output of the algorithm is a list that includes:
 //' \itemize{ 
-//'  \item \code{log2scale} The log2 scales used for the analysis
-//'  \item \code{log2Fq} The log2 of the fluctuation functions for each scale and q 
+//'  \item \code{log_scale} The log2 scales used for the analysis
+//'  \item \code{log_fq} The log2 of the fluctuation functions for each scale and q 
 //'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
 //'  \item \code{Tau} The q-order mass exponent
 //'  \item \code{q} The q-order statistical moments
@@ -107,7 +107,7 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         
         //do the detrending and return the RMSE for each of the ith scales
         arma::mat fq(numberOfScales,qlength);
-        arma::mat log2Fq(numberOfScales,qlength);
+        arma::mat log_fq(numberOfScales,qlength);
         arma::mat qRMS(numberOfScales, qlength);
         
         for (unsigned int ns = 0; ns < numberOfScales; ++ns ){
@@ -140,25 +140,25 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
             
             for (unsigned int nq = 0; nq < qlength; ++nq){
                 fq.row(ns) = arma::pow(qRMS.row(ns),(1/q[nq]));
-                log2Fq(ns,nq) = log2(fq(ns,nq));
+                log_fq(ns,nq) = log2(fq(ns,nq));
 
             }
             
-            log2Fq(ns, q0indx(0)) = (log2Fq(ns, q0indx(0)-1) + log2Fq(ns, q0indx(0)+1))/2;
+            log_fq(ns, q0indx(0)) = (log_fq(ns, q0indx(0)-1) + log_fq(ns, q0indx(0)+1))/2;
         }
         
         //take the log2 of scales
-        arma::vec log2Scale(numberOfScales);
+        arma::vec log_scale(numberOfScales);
         for ( unsigned int i = 0; i < numberOfScales; ++i ){
-            log2Scale(i) = log2(scales(i));
+            log_scale(i) = log2(scales(i));
         }
         
         //compute various fractal scaling exponents (tau, h, Dh)
         arma::vec Hq(q.n_elem);
         
         for ( unsigned int nq = 0; nq < q.n_elem; ++nq ){
-            arma::vec temp = log2Fq.col(nq);
-            arma::vec p = lm_c(log2Scale,temp);
+            arma::vec temp = log_fq.col(nq);
+            arma::vec p = lm_c(log_scale,temp);
             Hq(nq)=p(1);
         }
 
@@ -176,7 +176,7 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         
         arma::vec h = hh;
         
-        return List::create(Named("log2Scale") = log2Scale, Named("log2Fq")=log2Fq, Named("Hq") = Hq,
+        return List::create(Named("log_scale") = log_scale, Named("log_fq")=log_fq, Named("Hq") = Hq,
         Named("Tau") = tau, Named("q") = q, Named("h")= h,
         Named("Dh")=Dh);
         
