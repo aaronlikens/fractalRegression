@@ -7,7 +7,7 @@
 #' analys of nonstationary time series. Physica A: Statistical Mechanics and 
 #' its Applications, 87
 #' @export
-mfplot = function(mf){
+mfdfa.plot = function(mf){
   if (length(mf) != 7){
     cat('This does not appear to be a multifractal spectrum object.\n')
     return(NULL)

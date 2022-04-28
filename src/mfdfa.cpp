@@ -92,15 +92,13 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
     try{
-        //double scale_ratio = 1.1;
+        
         double len = x.size();  // get size of time series
-        //double scale_min = 256;  //minimum scale to resolve
         unsigned int numberOfScales = scales.n_elem;//determine how many scales to use
         arma::vec X = cumsum(x-mean(x));  //take the cumulative sum of the data
         
         //create vectors of scales and q values
         unsigned int qlength = q.n_elem;
-        // int q0indx = which_value(q, 1e-13);
         arma::uvec q0indx = arma::find(abs(q) <= 1e-13,1); // may be incompatible
         q(q0indx(0)) = 0.0;
         
