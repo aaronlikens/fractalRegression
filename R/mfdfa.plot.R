@@ -1,8 +1,12 @@
 #' Multifractal Spectrum Plot
+#'
+#'
 #' Method for plotting various forms of the multifractal spectrum
+#' 
+#' 
 #' @param mf an object containing elements related to the mutlifractal 
 #' spectrum derived from Multifractal Detrended Fluctuation Analysis
-#' @author Aaron D. Likens (2018)
+#' @author Aaron D. Likens (2022)
 #' @references Kantelhardt et al. (2002). Multifractal detrended fluctuation
 #' analys of nonstationary time series. Physica A: Statistical Mechanics and 
 #' its Applications, 87

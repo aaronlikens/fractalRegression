@@ -20,10 +20,10 @@ in overfitting and non-meaningful estimates.}
 
 \item{scales}{An integer valued vector indicating the scales one wishes to resolve
 in the analysis. Best practice is to use scales which are evenly spaced in 
-the logarithmic domain e.g., scales = 2^(4:(N/4)), where N is the length of the
+the logarithmic domain e.g., \code{scales = 2^(4:(N/4))}, where N is the length of the
 time series. Other, logarithmic bases may also be used to give finer 
 resolution of scales while maintaining ~= spacing in the log domain e.g, 
-scales = unique(floor(1.1^(30:(N/4)))). Note that fractional bases may 
+\code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 produce duplicate values after the necessary floor function.}
 }
 \value{
@@ -62,11 +62,12 @@ See Eke et al. (2002), Gulich and Zunino (2014), Ihlen (2012), and  for addition
 
 noise <- rnorm(5000)
 
+scales <- c(16,32,64,128,256,512,1024)
+
 mf.dfa.white.out <- mfdfa(
     x = noise, q = c(-5:5), 
     order = 1, 
-    scale_min = 16, 
-    scale_max = length(noise)/4, 
+    scales = scales, 
     scale_ratio = 2) 
  
 pink.noise <- fgn_sim(n = 5000, H = 0.9)
@@ -75,8 +76,7 @@ mf.dfa.pink.out <- mfdfa(
     x = pink.noise, 
     q = c(-5:5), 
     order = 1, 
-    scale_min = 16, 
-    scale_max = length(pink.noise)/4, 
+    scales = scales, 
     scale_ratio = 2)
 
 
