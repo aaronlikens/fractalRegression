@@ -18,7 +18,7 @@ License: GPL (>= 3)
 Depends: R (>= 3.5.0)
 Suggests: knitr, markdown, rmarkdown, ggplot2, crqa, MFDFA, fracdiff, tseries, fields, ifultools, gridExtra, qpdf
 Encoding: UTF-8
-Imports: Rcpp (>= 1.0.0)
+Imports: Rcpp (>= 1.0.0), colorRamps
 LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 RoxygenNote: 7.1.2

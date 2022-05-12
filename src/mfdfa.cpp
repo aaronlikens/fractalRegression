@@ -6,8 +6,11 @@ using namespace Rcpp;
 
 //' Multifractal Detrended Fluctuation Analysis
 //'
-//' Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 
-//' MF-DFA is also a form of multifractal analysis that indicates the degree of interaction across temporal scales.
+//' Fast function for computing multifractal detrended fluctuation analysis 
+//' (MF-DFA), a widely used method for estimating the family of long-range 
+//' temporal correlations or scaling exponents in time series data. 
+//' MF-DFA is also a form of multifractal analysis that indicates the degree 
+//' of interaction across temporal scales.
 //' 
 //' @param x A real valued vector (i.e., time series data) to be analyzed. 
 //' @param q A real valued vector indicating the statistical moments (q) to use 
@@ -92,7 +95,6 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
     try{
-        
         double len = x.size();  // get size of time series
         unsigned int numberOfScales = scales.n_elem;//determine how many scales to use
         arma::vec X = cumsum(x-mean(x));  //take the cumulative sum of the data
@@ -100,7 +102,12 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         //create vectors of scales and q values
         unsigned int qlength = q.n_elem;
         arma::uvec q0indx = arma::find(abs(q) <= 1e-13,1); // may be incompatible
-        q(q0indx(0)) = 0.0;
+        bool q_contains_zero = arma::numel(q0indx) > 0;
+        
+        if (q_contains_zero) {
+          q(q0indx(0)) = 0.0;  
+        }
+        
         
         
         //do the detrending and return the RMSE for each of the ith scales
@@ -141,8 +148,10 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
                 log_fq(ns,nq) = log2(fq(ns,nq));
 
             }
+            if (q_contains_zero){
+              log_fq(ns, q0indx(0)) = (log_fq(ns, q0indx(0)-1) + log_fq(ns, q0indx(0)+1))/2;  
+            }
             
-            log_fq(ns, q0indx(0)) = (log_fq(ns, q0indx(0)-1) + log_fq(ns, q0indx(0)+1))/2;
         }
         
         //take the log2 of scales
@@ -153,7 +162,6 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         
         //compute various fractal scaling exponents (tau, h, Dh)
         arma::vec Hq(q.n_elem);
-        
         for ( unsigned int nq = 0; nq < q.n_elem; ++nq ){
             arma::vec temp = log_fq.col(nq);
             arma::vec p = lm_c(log_scale,temp);

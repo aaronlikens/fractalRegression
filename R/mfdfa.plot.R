@@ -10,6 +10,7 @@
 #' @references Kantelhardt et al. (2002). Multifractal detrended fluctuation
 #' analys of nonstationary time series. Physica A: Statistical Mechanics and 
 #' its Applications, 87
+#' @import colorRamps
 #' @export
 mfdfa.plot = function(mf){
   if (length(mf) != 7){

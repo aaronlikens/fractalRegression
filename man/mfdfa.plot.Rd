@@ -19,5 +19,5 @@ analys of nonstationary time series. Physica A: Statistical Mechanics and
 its Applications, 87
 }
 \author{
-Aaron D. Likens (2018)
+Aaron D. Likens (2022)
 }
