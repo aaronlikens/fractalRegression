@@ -1,19 +1,13 @@
-# fractalRegression
+## Installation
 
-An R package that includes fractal analysis functions for univariate Detrended Fluctuation Analysis and Multi-Fractal Detrended Fluctuation Analysis as well as bivariate Detrended Cross-Correlation Analysis and Multiscale Regression Analysis.
-It is built on a C++ architecture and is thus, efficient for long time series. 
-
-# Installation
-
-
-The fractalRegression package will soon be available on CRAN (the
-Comprehensive R Archive Network) and can then be installed using :
-<https://cran.r-project.org/package=fractalRegression>
+The fractalRegression package *cannot* currently be installed through
+CRAN (the Comprehensive R Archive Network)
+<https://cran.r-project.org/package=fractalRegression>. But, once it’s
+available there, it can be installed withe the following:
 
 ``` r
 install.packages("fractalRegression")
 ```
-
 
 The development version is available on Aaron Likens’ Github
 (<https://github.com/aaronlikens/fractalRegression>) and can be
@@ -25,21 +19,6 @@ package to get necessary components:
 ``` r
 devtools::install_github("aaronlikens/fractalRegression")
 ```
-
-
-
-# Citation
-
-If you use this package, please use the following citation.
-
-```
- @Software{fractalRegression,
-    title = {fractalRegression: An R package for univariate and bivariate fractal analyses},
-    author = {Aaron D. Likens and Travis J. Wiltshire},
-    year = {2021},
-    url = {github.com/aaronlikens/fractalRegression},
-  }
- ```
 
 ## Introduction
 
@@ -60,9 +39,10 @@ noise using the `dfa()` function.
 # Generate white noise
 set.seed(23422345)
 noise <- rnorm(5000)
+scales <- logscale(scale_min=16, scale_max = 1025, scale_ratio = 2)
 
 # Run DFA on white noise
-dfa.noise.out <- dfa(x = noise, order = 1, verbose = 1, sc_min = 16, sc_max = length(noise)/4, scale_ratio = 2)
+dfa.noise.out <- dfa(x = noise, order = 1, verbose = 1, scales=scales, scale_ratio = 2)
 ```
 
 Since we simulated this white noise, we would expect that our *α* is
@@ -78,7 +58,7 @@ set.seed(34534534)
 pink.noise <- fgn_sim(n = 5000, H = 0.9)
 
 # Run DFA on pink noise
-dfa.pink.out <- dfa(x = pink.noise, order = 1, verbose = 1, sc_min = 16, sc_max = length(pink.noise)/4, scale_ratio = 2)
+dfa.pink.out <- dfa(x = pink.noise, order = 1, verbose = 1, scales = scales, scale_ratio = 2)
 ```
 
 Since we simulated this data with an H = 0.9, we would expect that our
@@ -94,17 +74,27 @@ set.seed(24633453)
 anticorr.noise <- fgn_sim(n = 5000, H = 0.25)
 
 # Run DFA on anti-correlated noise 
-dfa.anticorr.out <- dfa(x = anticorr.noise, order = 1, verbose = 1, sc_min = 16, sc_max = length(anticorr.noise)/4, scale_ratio = 2)
+dfa.anticorr.out <- dfa(x = anticorr.noise, order = 1, verbose = 1, scales = scales, scale_ratio = 2)
 ```
 
 As with above, since we simulated with H = 0.25, we observed a close
 estimate of the *α* exponent, which is 0.2301879.
 
-Now let’s take a look at the log-log plots for the three types of noise.
-Given the estimates above, we see that the slopes for white noise, pink
-noise, and anti-correlated noise conform to our expectations.
+Now let’s take a look at the log-log plots for the three types of noise
+using the `dfa.plot()` function. Given the estimates above, we see that
+the slopes for white noise, pink noise, and anti-correlated noise
+conform to our expectations. In the figures below, the intercept and the
+slopes (i.e., *α* exponents) are shown in addition to the
+*R*<sup>2</sup>.
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-6-1.png)
+``` r
+par(mfrow=c(3,1))
+dfa.plot(dfa.noise.out)
+dfa.plot(dfa.pink.out)
+dfa.plot(dfa.anticorr.out)
+```
+
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ## Multifractal Detrended Fluctuation Analysis
 
@@ -117,9 +107,9 @@ this easily using the `mfdfa()` function.
 
 ``` r
 # Run MF-DFA on simulated pink and white noise
-mf.dfa.pink.out <- mfdfa(x = pink.noise, q = c(-5:5), order = 1, scale_min = 16, scale_max = length(pink.noise)/4, scale_ratio = 2)
+mf.dfa.pink.out <- mfdfa(x = pink.noise, q = c(-5:5), order = 1, scales = scales)
 
-mf.dfa.white.out <- mfdfa(x = noise, q = c(-5:5), order = 1, scale_min = 16, scale_max = length(noise)/4, scale_ratio = 2)
+mf.dfa.white.out <- mfdfa(x = noise, q = c(-5:5), order = 1, scale = scales)
 ```
 
 Let’s first make sure that our *α* estimate is the same as before when q
@@ -144,18 +134,19 @@ Next we are going to work with data that we include in our package
 includes a white noise time series, monofractal time series, and a
 multifractal time series.
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 Now let’s run MFDFA on these times series. In this case we replicate the
 choice of parameters in Ihlen (2012) with a q range of -5 to 5, and
 order = 1, a scale min of 16, and a scale max 1,024.
 
 ``` r
-white.mf.dfa.out <- mfdfa(x = fractaldata$whitenoise, q = c(-5:5), order = 1, scale_min = 16, scale_max = 1024, scale_ratio = 1.1)
+scales <- logscale(scale_min = 16, scale_max = 1025, scale_ratio = 1.1)
+white.mf.dfa.out <- mfdfa(x = fractaldata$whitenoise, q = c(-5:5), order = 1, scales = scales)
 
-mono.mf.dfa.out <- mfdfa(x = fractaldata$monofractal, q = c(-5:5), order = 1, scale_min = 16, scale_max = 1024, scale_ratio = 1.1)
+mono.mf.dfa.out <- mfdfa(x = fractaldata$monofractal, q = c(-5:5), order = 1, scales = scales)
 
-multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1, scale_min = 16, scale_max = 1024, scale_ratio = 1.1)
+multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1, scales = scales)
 ```
 
 A common way to understand if there is evidence of multifractality is to
@@ -163,53 +154,45 @@ examine a plot showing the Hq estimates for different values of q. If
 all the plots have the same slope, that provides evidence of
 monofractality. If there are distinct slopes, then there is evidence of
 multifractality. It’s also important to check here that the slopes of
-`log2scales` and `log2Fq` are linear, thus implying that they are scale
+`log_2_scale` and `log_fq` are linear, thus implying that they are scale
 invariant. If not, then it could be the case that a higher order
-polynomial detrending is appropriate (see Kantelhardt et al., 2001).
+polynomial detrending is appropriate (see Kantelhardt et al., 2001). We
+are going to use the `mfdfa.plot()` function to compare the monofractal
+and multifractal signals.
 
 ``` r
 # Let's first make a plot of the monofractal case
-monofractal.fluctuations <- as.data.frame(mono.mf.dfa.out$log2Fq)
-graphics::matplot(monofractal.fluctuations, pch=19, add=FALSE, xlab="log Scale", ylab="log Fq", main = "Monofractal")
+mfdfa.plot(mono.mf.dfa.out)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-11-1.png)
-
-``` r
-
-```
-
-Now let’s compare the above plot for the monofractal and multifractal
-results. We see that the slopes of the lines for the multifractal signal
-are divergent.
-
-``` r
-multifractal.fluctuations <- as.data.frame(multi.mf.dfa.out$log2Fq)
-graphics::matplot(multifractal.fluctuations, pch=19, add=FALSE, xlab="log Scale", ylab="log Fq", main = "Multifractal")
-```
-
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-12-1.png)
-
-It’s also common to examine the relationship between Hq and q as well as
-H and D(H).
-
-``` r
-# Let's start by plotting the Hq and q
-plot(mono.mf.dfa.out$q,mono.mf.dfa.out$Hq, type= 'b', pch=19, ylim=c(0.4,2), ylab="Hq", xlab="q", main="q-order Hurst exponents for Mono- and Multi-fractal Signals")
-lines(multi.mf.dfa.out$q,multi.mf.dfa.out$Hq, type='b', pch=19, col="blue")
-legend(-4.5,2, legend = c("Monofractal", "Multifractal"), col=c("black", "blue"), lwd=1)
-```
+    ## Loading required package: colorRamps
 
 ![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
+Now let’s compare the above plot for the monofractal and multifractal
+results. In comparing, the top left part of both plots, we see that the
+slopes of the lines for the multifractal signal are divergent compared
+to the monofractal case.
+
 ``` r
+mfdfa.plot(multi.mf.dfa.out)
+```
+
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-15-1.png)
+It’s also common to examine the relationship between Hq and q as well as
+H and D(H). We can see the comparison in the bottom right of the two
+figures above, and the relative difference in the widths of the
+mutlifractal spectra.
+
+``` r
+## Old Code ##
 # Create the plot 
 plot(mono.mf.dfa.out$h,mono.mf.dfa.out$Dh, type='b', lwd=1, lty=2, pch=19,ylim=c(-0.4,1),xlim=c(-.8,.8), ylab="D(h)", xlab="h", main= "Multifractal Spectrum for Mono- and Multi-fractal Signals")
 lines(multi.mf.dfa.out$h,multi.mf.dfa.out$Dh, type='b', pch=19,lwd=3, col="blue")
 legend(-.85,1, legend = c("Monofractal", "Multifractal"), col=c("black", "blue"), lwd=3)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 A common metric for comparing the multifractal spectrum is to calculate
 the width (W) as the *h*<sub>*m**a**x*</sub> − *h*<sub>*m**i**n*</sub>.
@@ -225,8 +208,8 @@ mono.W <- max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)
 multi.W <- max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)
 ```
 
-We observe here that the W for the multifractal signal is 1.3629882 and
-for the monofractal signal, W is 0.0758918.
+We observe here that the W for the multifractal signal is 1.3566793 and
+for the monofractal signal, W is 0.0754753.
 
 ## Detrended Cross-Correlation Analysis (DCCA)
 
@@ -241,19 +224,15 @@ by Podobnik and Stanley (2008) and Zebende (2011).
 First, however, we are going to simulate some data first. These
 functions are taken from and available at Ladislav Kristoufek’s website
 (<http://staff.utia.cas.cz/kristoufek/Ladislav_Kristoufek/Codes_files/MC-ARFIMA.R>)
-and they correspond with the following paper (Kristoufek, 2013).
-
-``` r
-# Source the code directly
-
-downloader::source_url("http://staff.utia.cas.cz/kristoufek/Ladislav_Kristoufek/Codes_files/MC-ARFIMA.R", prompt=FALSE, quiet = TRUE)
-```
+and they correspond with the following paper (Kristoufek, 2013). We
+implement a function that includes all of these options called
+`mc_ARFIMA()`.
 
 The MC-ARFIMA models take the form of the two equations shown below:
 
-![](fractalRegression_vignette_files/figure-markdown_github/equation1.png)
+$x_t = \\alpha \\sum^{+ \\infty}\_{n=0}a_n(d_1)\\varepsilon\_{1,t-n}+\\beta \\sum^{+ \\infty}\_{n=0}a_n(d_2)\\varepsilon\_{2,t-n}$
 
-![](fractalRegression_vignette_files/figure-markdown_github/equation2.png)
+$y_t = \\gamma \\sum^{+ \\infty}\_{n=0}a_n(d_3)\\varepsilon\_{3,t-n}+\\delta \\sum^{+ \\infty}\_{n=0}a_n(d_4)\\varepsilon\_{4,t-n}$
 
 ### Simulate some data with the MC-ARFIMA model
 
@@ -264,17 +243,17 @@ cross-correlations (LRCC).
 
 ``` r
 set.seed(987345757)
-sim1 <- Mixed_ARFIMA_ARFIMA(alpha = 0.2, beta = 1, gamma = 1, delta = 0.2, n = 10000, d1 = 0.4, d2 = 0.3, d3 = 0.3, d4=0.4, rho=0.9)
+sim1 <- mc_ARFIMA(process='Mixed_ARFIMA_ARFIMA',alpha = 0.2, beta = 1, gamma = 1, delta = 0.2, n = 10000, d1 = 0.4, d2 = 0.3, d3 = 0.3, d4=0.4, rho=0.9)
 plot(sim1[,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA with LRC and LRCC")
 lines(sim1[,2], col='blue')
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 ### Run DCCA on the MC-ARFIMA with LRC and LRCC
 
 ``` r
-scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 dcca.out.arfima <- dcca(sim1[,1], sim1[,2], order = 1, scales = scales)
 dcca.out.arfima <- as.data.frame(dcca.out.arfima)
 error <- sd(dcca.out.arfima$rho)/sqrt(length(dcca.out.arfima$rho))
@@ -283,7 +262,7 @@ dcca.plot <- ggplot(data=dcca.out.arfima, aes(x=scales,y=rho)) + geom_point() +g
 dcca.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 In the above figure, we see that the correlation between the MC-ARFIMA
 processes are consistently high and continue to be high at increasing
@@ -295,17 +274,17 @@ cross-correlation (SRCC).
 
 ``` r
 set.seed(423422)
-sim2 <- Mixed_ARFIMA_AR(alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta=0.8,rho=0.9)
+sim2 <- mc_ARFIMA(process = "Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta1=0.8,theta2=0.8,rho=0.9)
 plot(sim2[,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA with LRC and SRCC")
 lines(sim2[,2], col='blue')
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
 ### Run DCCA on the MC-ARFIMA with LRC and SRCC
 
 ``` r
-scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1001, scale_ratio = 1.1)
 dcca.out.arfima2 <- dcca(sim2[,1], sim2[,2], order = 1, scales = scales)
 dcca.out.arfima2 <- as.data.frame(dcca.out.arfima2)
 error <- sd(dcca.out.arfima2$rho)/sqrt(length(dcca.out.arfima2$rho))
@@ -314,7 +293,7 @@ dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() 
 dcca.plot2
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
 In contrast to the previous DCCA analysis, the above figure shows a
 signal that begins with a high cross-correlation, but that begins to
@@ -331,7 +310,7 @@ as our predictor (*x*<sub>*t*</sub>) and the other as our outcome
 (*y*<sub>*t*</sub>).
 
 ``` r
-scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1001, scale_ratio = 1.1)
 mra.out <- as.data.frame(mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales))
 error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
 mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line() +ggtitle("Multiscale Regression Analysis for MC-ARFIMA with LRC and LRCC") + geom_pointrange(aes(ymin=betas-error,ymax=betas+error))
@@ -339,15 +318,15 @@ mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_lin
 mra.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 Generally, we observe that the *β* coefficients are relatively stable at
 increasing time scales with a general, perhaps quadratically increasing
 trend. Here it is also important to investigate the change in
 *R*<sup>2</sup> as well as the *t*-values. Below we see that the
 *R*<sup>2</sup> is quite high at most of the time scales with
-*R*<sub>*m**i**n*</sub><sup>2</sup>= 0.65 and
-*R*<sub>*m**a**x*</sub><sup>2</sup>= 0.87and all of the *t*-values
+*R*<sub>*m**i**n*</sub><sup>2</sup>= 0.67 and
+*R*<sub>*m**a**x*</sub><sup>2</sup>= 1.85and all of the *t*-values
 greater than the conventional cut-off at 1.96. So between these two
 component ARFIMA processes, the output of MRA shows that much of the
 scale specific variance in *y*<sub>*t*</sub> is explained and predicted
@@ -383,13 +362,13 @@ t_observed
 10
 </td>
 <td style="text-align:center;">
-0.87
+0.83
 </td>
 <td style="text-align:center;">
-0.75
+1.85
 </td>
 <td style="text-align:center;">
-5.26
+NaN
 </td>
 </tr>
 <tr>
@@ -397,13 +376,13 @@ t_observed
 11
 </td>
 <td style="text-align:center;">
-0.86
+0.81
 </td>
 <td style="text-align:center;">
-0.75
+1.72
 </td>
 <td style="text-align:center;">
-5.45
+NaN
 </td>
 </tr>
 <tr>
@@ -411,13 +390,13 @@ t_observed
 12
 </td>
 <td style="text-align:center;">
-0.87
+0.81
 </td>
 <td style="text-align:center;">
-0.75
+1.60
 </td>
 <td style="text-align:center;">
-5.80
+NaN
 </td>
 </tr>
 <tr>
@@ -425,13 +404,13 @@ t_observed
 13
 </td>
 <td style="text-align:center;">
-0.86
+0.79
 </td>
 <td style="text-align:center;">
-0.74
+1.49
 </td>
 <td style="text-align:center;">
-5.82
+NaN
 </td>
 </tr>
 <tr>
@@ -439,13 +418,13 @@ t_observed
 14
 </td>
 <td style="text-align:center;">
-0.87
+0.80
 </td>
 <td style="text-align:center;">
-0.75
+1.41
 </td>
 <td style="text-align:center;">
-6.18
+NaN
 </td>
 </tr>
 <tr>
@@ -453,13 +432,13 @@ t_observed
 16
 </td>
 <td style="text-align:center;">
-0.86
+0.78
 </td>
 <td style="text-align:center;">
-0.74
+1.29
 </td>
 <td style="text-align:center;">
-6.57
+NaN
 </td>
 </tr>
 <tr>
@@ -467,13 +446,13 @@ t_observed
 17
 </td>
 <td style="text-align:center;">
-0.85
+0.77
 </td>
 <td style="text-align:center;">
-0.74
+1.24
 </td>
 <td style="text-align:center;">
-6.75
+NaN
 </td>
 </tr>
 <tr>
@@ -481,13 +460,13 @@ t_observed
 19
 </td>
 <td style="text-align:center;">
-0.84
+0.75
 </td>
 <td style="text-align:center;">
-0.74
+1.17
 </td>
 <td style="text-align:center;">
-7.13
+NaN
 </td>
 </tr>
 <tr>
@@ -495,13 +474,13 @@ t_observed
 21
 </td>
 <td style="text-align:center;">
-0.86
+0.76
 </td>
 <td style="text-align:center;">
-0.74
+1.11
 </td>
 <td style="text-align:center;">
-7.49
+NaN
 </td>
 </tr>
 <tr>
@@ -509,13 +488,13 @@ t_observed
 23
 </td>
 <td style="text-align:center;">
-0.84
+0.74
 </td>
 <td style="text-align:center;">
-0.75
+1.07
 </td>
 <td style="text-align:center;">
-8.09
+NaN
 </td>
 </tr>
 <tr>
@@ -523,13 +502,13 @@ t_observed
 25
 </td>
 <td style="text-align:center;">
-0.85
-</td>
-<td style="text-align:center;">
 0.74
 </td>
 <td style="text-align:center;">
-8.28
+1.02
+</td>
+<td style="text-align:center;">
+NaN
 </td>
 </tr>
 <tr>
@@ -537,13 +516,13 @@ t_observed
 28
 </td>
 <td style="text-align:center;">
-0.85
+0.73
 </td>
 <td style="text-align:center;">
-0.75
+0.98
 </td>
 <td style="text-align:center;">
-8.97
+29.88
 </td>
 </tr>
 <tr>
@@ -551,13 +530,13 @@ t_observed
 31
 </td>
 <td style="text-align:center;">
-0.85
+0.73
 </td>
 <td style="text-align:center;">
-0.74
+0.93
 </td>
 <td style="text-align:center;">
-9.21
+17.94
 </td>
 </tr>
 <tr>
@@ -565,13 +544,13 @@ t_observed
 34
 </td>
 <td style="text-align:center;">
-0.85
+0.72
 </td>
 <td style="text-align:center;">
-0.73
+0.90
 </td>
 <td style="text-align:center;">
-9.55
+15.67
 </td>
 </tr>
 <tr>
@@ -579,13 +558,13 @@ t_observed
 37
 </td>
 <td style="text-align:center;">
-0.83
+0.69
 </td>
 <td style="text-align:center;">
-0.74
+0.89
 </td>
 <td style="text-align:center;">
-10.00
+15.03
 </td>
 </tr>
 <tr>
@@ -593,13 +572,13 @@ t_observed
 41
 </td>
 <td style="text-align:center;">
-0.83
+0.69
 </td>
 <td style="text-align:center;">
-0.75
+0.88
 </td>
 <td style="text-align:center;">
-11.03
+15.64
 </td>
 </tr>
 <tr>
@@ -607,13 +586,13 @@ t_observed
 45
 </td>
 <td style="text-align:center;">
-0.83
+0.68
 </td>
 <td style="text-align:center;">
-0.75
+0.85
 </td>
 <td style="text-align:center;">
-11.57
+14.63
 </td>
 </tr>
 <tr>
@@ -621,13 +600,13 @@ t_observed
 50
 </td>
 <td style="text-align:center;">
+0.67
+</td>
+<td style="text-align:center;">
 0.83
 </td>
 <td style="text-align:center;">
-0.74
-</td>
-<td style="text-align:center;">
-11.74
+14.66
 </td>
 </tr>
 <tr>
@@ -635,13 +614,13 @@ t_observed
 55
 </td>
 <td style="text-align:center;">
-0.80
+0.65
 </td>
 <td style="text-align:center;">
-0.71
+0.79
 </td>
 <td style="text-align:center;">
-11.58
+13.35
 </td>
 </tr>
 <tr>
@@ -649,13 +628,13 @@ t_observed
 61
 </td>
 <td style="text-align:center;">
-0.86
+0.68
 </td>
 <td style="text-align:center;">
-0.76
+0.82
 </td>
 <td style="text-align:center;">
-13.92
+15.90
 </td>
 </tr>
 <tr>
@@ -663,13 +642,13 @@ t_observed
 67
 </td>
 <td style="text-align:center;">
-0.83
+0.66
 </td>
 <td style="text-align:center;">
-0.74
+0.81
 </td>
 <td style="text-align:center;">
-13.86
+15.86
 </td>
 </tr>
 <tr>
@@ -677,13 +656,13 @@ t_observed
 74
 </td>
 <td style="text-align:center;">
-0.83
+0.65
 </td>
 <td style="text-align:center;">
-0.75
+0.80
 </td>
 <td style="text-align:center;">
-14.70
+16.35
 </td>
 </tr>
 <tr>
@@ -691,13 +670,13 @@ t_observed
 81
 </td>
 <td style="text-align:center;">
-0.82
+0.64
 </td>
 <td style="text-align:center;">
-0.73
+0.78
 </td>
 <td style="text-align:center;">
-14.74
+16.36
 </td>
 </tr>
 <tr>
@@ -705,13 +684,13 @@ t_observed
 89
 </td>
 <td style="text-align:center;">
-0.85
+0.66
 </td>
 <td style="text-align:center;">
-0.70
+0.74
 </td>
 <td style="text-align:center;">
-14.24
+15.20
 </td>
 </tr>
 <tr>
@@ -719,13 +698,13 @@ t_observed
 98
 </td>
 <td style="text-align:center;">
-0.80
+0.60
 </td>
 <td style="text-align:center;">
-0.72
+0.75
 </td>
 <td style="text-align:center;">
-15.94
+16.50
 </td>
 </tr>
 <tr>
@@ -733,13 +712,13 @@ t_observed
 108
 </td>
 <td style="text-align:center;">
-0.81
+0.61
 </td>
 <td style="text-align:center;">
-0.73
+0.76
 </td>
 <td style="text-align:center;">
-16.92
+17.82
 </td>
 </tr>
 <tr>
@@ -747,13 +726,13 @@ t_observed
 119
 </td>
 <td style="text-align:center;">
-0.85
+0.63
 </td>
 <td style="text-align:center;">
-0.74
+0.76
 </td>
 <td style="text-align:center;">
-18.41
+19.15
 </td>
 </tr>
 <tr>
@@ -761,13 +740,13 @@ t_observed
 131
 </td>
 <td style="text-align:center;">
-0.85
+0.64
 </td>
 <td style="text-align:center;">
-0.76
+0.79
 </td>
 <td style="text-align:center;">
-20.57
+21.59
 </td>
 </tr>
 <tr>
@@ -775,13 +754,13 @@ t_observed
 144
 </td>
 <td style="text-align:center;">
-0.80
+0.59
 </td>
 <td style="text-align:center;">
-0.67
+0.69
 </td>
 <td style="text-align:center;">
-16.89
+17.45
 </td>
 </tr>
 <tr>
@@ -789,13 +768,13 @@ t_observed
 158
 </td>
 <td style="text-align:center;">
-0.79
+0.58
 </td>
 <td style="text-align:center;">
-0.65
+0.67
 </td>
 <td style="text-align:center;">
-17.01
+17.73
 </td>
 </tr>
 <tr>
@@ -803,13 +782,13 @@ t_observed
 174
 </td>
 <td style="text-align:center;">
-0.83
+0.61
 </td>
 <td style="text-align:center;">
-0.72
+0.73
 </td>
 <td style="text-align:center;">
-21.26
+21.24
 </td>
 </tr>
 <tr>
@@ -817,13 +796,13 @@ t_observed
 191
 </td>
 <td style="text-align:center;">
-0.84
+0.59
 </td>
 <td style="text-align:center;">
-0.71
+0.72
 </td>
 <td style="text-align:center;">
-21.49
+21.91
 </td>
 </tr>
 <tr>
@@ -831,13 +810,13 @@ t_observed
 211
 </td>
 <td style="text-align:center;">
-0.79
+0.57
 </td>
 <td style="text-align:center;">
 0.73
 </td>
 <td style="text-align:center;">
-23.74
+23.73
 </td>
 </tr>
 <tr>
@@ -845,13 +824,13 @@ t_observed
 232
 </td>
 <td style="text-align:center;">
-0.83
+0.59
 </td>
 <td style="text-align:center;">
-0.70
+0.68
 </td>
 <td style="text-align:center;">
-22.98
+22.25
 </td>
 </tr>
 <tr>
@@ -859,13 +838,13 @@ t_observed
 255
 </td>
 <td style="text-align:center;">
-0.84
+0.58
 </td>
 <td style="text-align:center;">
-0.72
+0.73
 </td>
 <td style="text-align:center;">
-25.88
+26.32
 </td>
 </tr>
 <tr>
@@ -873,13 +852,13 @@ t_observed
 281
 </td>
 <td style="text-align:center;">
-0.85
+0.59
 </td>
 <td style="text-align:center;">
-0.77
+0.78
 </td>
 <td style="text-align:center;">
-30.29
+30.95
 </td>
 </tr>
 <tr>
@@ -887,13 +866,13 @@ t_observed
 309
 </td>
 <td style="text-align:center;">
-0.79
+0.53
 </td>
 <td style="text-align:center;">
-0.70
+0.71
 </td>
 <td style="text-align:center;">
-26.90
+27.11
 </td>
 </tr>
 <tr>
@@ -901,13 +880,13 @@ t_observed
 340
 </td>
 <td style="text-align:center;">
-0.90
+0.61
 </td>
 <td style="text-align:center;">
 0.79
 </td>
 <td style="text-align:center;">
-35.45
+35.79
 </td>
 </tr>
 <tr>
@@ -915,13 +894,13 @@ t_observed
 374
 </td>
 <td style="text-align:center;">
-0.82
+0.55
 </td>
 <td style="text-align:center;">
 0.79
 </td>
 <td style="text-align:center;">
-37.87
+37.85
 </td>
 </tr>
 <tr>
@@ -929,13 +908,13 @@ t_observed
 411
 </td>
 <td style="text-align:center;">
-0.86
+0.58
 </td>
 <td style="text-align:center;">
-0.76
+0.77
 </td>
 <td style="text-align:center;">
-36.29
+37.49
 </td>
 </tr>
 <tr>
@@ -943,13 +922,13 @@ t_observed
 452
 </td>
 <td style="text-align:center;">
-0.91
+0.60
 </td>
 <td style="text-align:center;">
-0.78
+0.79
 </td>
 <td style="text-align:center;">
-39.92
+41.18
 </td>
 </tr>
 <tr>
@@ -957,13 +936,13 @@ t_observed
 497
 </td>
 <td style="text-align:center;">
-0.95
+0.62
 </td>
 <td style="text-align:center;">
 0.87
 </td>
 <td style="text-align:center;">
-57.44
+58.07
 </td>
 </tr>
 <tr>
@@ -971,13 +950,13 @@ t_observed
 547
 </td>
 <td style="text-align:center;">
-0.87
+0.56
 </td>
 <td style="text-align:center;">
-0.83
+0.81
 </td>
 <td style="text-align:center;">
-50.85
+47.56
 </td>
 </tr>
 <tr>
@@ -985,13 +964,13 @@ t_observed
 602
 </td>
 <td style="text-align:center;">
-0.87
+0.55
 </td>
 <td style="text-align:center;">
-0.82
+0.81
 </td>
 <td style="text-align:center;">
-52.81
+50.05
 </td>
 </tr>
 <tr>
@@ -999,13 +978,13 @@ t_observed
 662
 </td>
 <td style="text-align:center;">
-0.91
+0.58
 </td>
 <td style="text-align:center;">
-0.84
+0.85
 </td>
 <td style="text-align:center;">
-59.92
+60.43
 </td>
 </tr>
 <tr>
@@ -1013,13 +992,13 @@ t_observed
 728
 </td>
 <td style="text-align:center;">
-0.82
+0.54
 </td>
 <td style="text-align:center;">
 0.79
 </td>
 <td style="text-align:center;">
-52.33
+52.95
 </td>
 </tr>
 <tr>
@@ -1027,13 +1006,13 @@ t_observed
 801
 </td>
 <td style="text-align:center;">
-0.87
+0.54
 </td>
 <td style="text-align:center;">
-0.79
+0.76
 </td>
 <td style="text-align:center;">
-55.44
+50.76
 </td>
 </tr>
 <tr>
@@ -1041,13 +1020,13 @@ t_observed
 881
 </td>
 <td style="text-align:center;">
-0.88
+0.51
 </td>
 <td style="text-align:center;">
-0.78
+0.75
 </td>
 <td style="text-align:center;">
-55.96
+51.47
 </td>
 </tr>
 <tr>
@@ -1055,13 +1034,13 @@ t_observed
 970
 </td>
 <td style="text-align:center;">
-0.98
+0.59
 </td>
 <td style="text-align:center;">
-0.86
+0.85
 </td>
 <td style="text-align:center;">
-77.65
+73.70
 </td>
 </tr>
 </tbody>
@@ -1080,7 +1059,7 @@ colfunc <- colorRampPalette(c("green", "red"))
 graphics::matplot(mlra.out$betas, type='l', col = colfunc(49), ylab="Beta Coefficient", xlab='Lag', main="Multiscale Lagged Regression Analysis")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 The figure above shows that there is high *β* values across scales only
 for lags near to 0. But, it’s difficult to see the scale-wise variation
@@ -1096,11 +1075,10 @@ y <- scales
 image.plot(x, y, mlra.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Multiscale Lagged Regression Analysis")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
-Depending on the data, it could also be nice to add contours to the plot, but it doesn't make much sense here. Regardless, some code below shows how this could be done.  
 ``` r
-#contour(x, y, mlra.out$betas,levels=seq(0,1,by=1),add=TRUE,col='black')
+#contour(x, y, mlra.out,levels=seq(0,1,by=1),add=TRUE,col='black')
 ```
 
 # An Empirical Example
@@ -1127,11 +1105,11 @@ head(handmovement)
     ## 6 0.10543719 0.06870953 0.005196152 0.007348469
 
 ``` r
-plot(handmovement$P1_TT_d, type='l', main = " Dominant hand-movement velocity profiles of two participants", xlab='time',ylab='movement velocity')
+plot(handmovement$P1_TT_d, type='l', main = "Dominant hand-movement velocity profiles of participants", xlab='time',ylab='movement velocity')
 lines(handmovement$P2_TT_d, col=2)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 ## MF-DFA on Empirical Data
 
@@ -1142,11 +1120,14 @@ scaling as well as multifractal scaling.
 
 ``` r
 # Participant 1
-q <- seq(0,5, by=0.25)
-mf.dfa.P1hand.out <- mfdfa(x = handmovement$P1_TT_d, q = q, order = 1, scale_min = 16, scale_max = length(handmovement$P1_TT_d)/4, scale_ratio = 2)
+q <- seq(-5,5, by=0.25)
+
+scales <- logscale(scale_min = 16, scale_max = length(handmovement$P1_TT_d)/4, scale_ratio = 2)
+
+mf.dfa.P1hand.out <- mfdfa(x = handmovement$P1_TT_d, q = q, order = 1, scales = scales)
 
 # Participant 2
-mf.dfa.P2hand.out <- mfdfa(x = handmovement$P2_TT_d, q = q, order = 1, scale_min = 16, scale_max = length(handmovement$P2_TT_d)/4, scale_ratio = 2)
+mf.dfa.P2hand.out <- mfdfa(x = handmovement$P2_TT_d, q = q, order = 1, scales = scales)
 
 # Examine the alpha exponent for q=2, which is equivalent to running DFA
 mf.dfa.P1hand.out$Hq[mf.dfa.P1hand.out$q==2]
@@ -1172,7 +1153,7 @@ lines(mf.dfa.P2hand.out$h,mf.dfa.P2hand.out$Dh, type='b', pch=19,lwd=3, col="blu
 legend(-.85,1, legend = c("P1", "P2"), col=c("black", "blue"), lwd=3)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-31-1.png)
 
 ``` r
 P1.W <- max(mf.dfa.P1hand.out$h) - min(mf.dfa.P1hand.out$h)
@@ -1181,8 +1162,8 @@ P2.W <- max(mf.dfa.P2hand.out$h) - min(mf.dfa.P2hand.out$h)
 
 When comparing multi-fractal spectrum width (W),
 *h*<sub>*m**a**x*</sub> − *h*<sub>*m**i**n*</sub>, we observe that both
-signals have a similar W. Specifically, Participant 1 W = 0.64 and
-Participant 2 W = 0.76. From the figures and W estimates, there does
+signals have a similar W. Specifically, Participant 1 W = NaN and
+Participant 2 W = NaN. From the figures and W estimates, there does
 appear to be scale-wise variation in the scaling exponents. However, a
 surrogate test could make this inference more robust.
 
@@ -1197,7 +1178,7 @@ general.
 ccf(handmovement$P1_TT_d, handmovement$P2_TT_d, lag.max = 500, main = "Cross-correlation function of P1 and P2 Hand Movements")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-33-1.png)
 
 It appears that there might be some lagged relationship between the two
 signals. Now, we can run and examine the results of `dcca()` examining
@@ -1217,7 +1198,7 @@ plot(dcca.out$scales, dcca.out$rho, type = 'b', pch = 16, xlab = 'Scale',
      ylab = expression(rho))
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-31-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-34-1.png)
 
 ``` r
 # dcca.plot
@@ -1242,7 +1223,7 @@ mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_lin
 mra.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-32-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-35-1.png)
 
 In the table below, we filter out those *β* coefficients, whose
 corresponding t-values are greater than +/- 1.96 to provide an index of
@@ -1279,6 +1260,74 @@ t_observed
 <tbody>
 <tr>
 <td style="text-align:left;">
+38
+</td>
+<td style="text-align:center;">
+200
+</td>
+<td style="text-align:center;">
+-0.12
+</td>
+<td style="text-align:center;">
+0.95
+</td>
+<td style="text-align:center;">
+-7.97
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+39
+</td>
+<td style="text-align:center;">
+205
+</td>
+<td style="text-align:center;">
+-0.12
+</td>
+<td style="text-align:center;">
+0.85
+</td>
+<td style="text-align:center;">
+-4.37
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:center;">
+220
+</td>
+<td style="text-align:center;">
+-0.12
+</td>
+<td style="text-align:center;">
+0.69
+</td>
+<td style="text-align:center;">
+-2.79
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+43
+</td>
+<td style="text-align:center;">
+225
+</td>
+<td style="text-align:center;">
+-0.10
+</td>
+<td style="text-align:center;">
+0.70
+</td>
+<td style="text-align:center;">
+-2.82
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 44
 </td>
 <td style="text-align:center;">
@@ -1288,10 +1337,61 @@ t_observed
 -0.17
 </td>
 <td style="text-align:center;">
-0.02
+0.67
 </td>
 <td style="text-align:center;">
--2.35
+-4.03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+45
+</td>
+<td style="text-align:center;">
+235
+</td>
+<td style="text-align:center;">
+-0.11
+</td>
+<td style="text-align:center;">
+0.67
+</td>
+<td style="text-align:center;">
+-2.66
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+46
+</td>
+<td style="text-align:center;">
+240
+</td>
+<td style="text-align:center;">
+-0.10
+</td>
+<td style="text-align:center;">
+0.74
+</td>
+<td style="text-align:center;">
+-3.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+47
+</td>
+<td style="text-align:center;">
+245
+</td>
+<td style="text-align:center;">
+-0.08
+</td>
+<td style="text-align:center;">
+0.70
+</td>
+<td style="text-align:center;">
+-2.25
 </td>
 </tr>
 <tr>
@@ -1305,10 +1405,27 @@ t_observed
 -0.20
 </td>
 <td style="text-align:center;">
-0.05
+0.74
 </td>
 <td style="text-align:center;">
--3.52
+-6.76
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+49
+</td>
+<td style="text-align:center;">
+255
+</td>
+<td style="text-align:center;">
+-0.09
+</td>
+<td style="text-align:center;">
+0.75
+</td>
+<td style="text-align:center;">
+-3.75
 </td>
 </tr>
 <tr>
@@ -1322,10 +1439,10 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.03
+0.64
 </td>
 <td style="text-align:center;">
--2.77
+-4.54
 </td>
 </tr>
 <tr>
@@ -1339,10 +1456,27 @@ t_observed
 -0.21
 </td>
 <td style="text-align:center;">
-0.04
+0.54
 </td>
 <td style="text-align:center;">
--3.25
+-4.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+55
+</td>
+<td style="text-align:center;">
+285
+</td>
+<td style="text-align:center;">
+-0.08
+</td>
+<td style="text-align:center;">
+0.60
+</td>
+<td style="text-align:center;">
+-2.46
 </td>
 </tr>
 <tr>
@@ -1356,10 +1490,27 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.42
 </td>
 <td style="text-align:center;">
--2.56
+-3.32
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+59
+</td>
+<td style="text-align:center;">
+305
+</td>
+<td style="text-align:center;">
+0.07
+</td>
+<td style="text-align:center;">
+0.52
+</td>
+<td style="text-align:center;">
+2.03
 </td>
 </tr>
 <tr>
@@ -1373,10 +1524,27 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.03
+0.44
 </td>
 <td style="text-align:center;">
--2.94
+-3.89
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+62
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+-0.09
+</td>
+<td style="text-align:center;">
+0.44
+</td>
+<td style="text-align:center;">
+-2.55
 </td>
 </tr>
 <tr>
@@ -1390,10 +1558,10 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.02
+0.39
 </td>
 <td style="text-align:center;">
--2.69
+-3.40
 </td>
 </tr>
 <tr>
@@ -1407,10 +1575,10 @@ t_observed
 -0.16
 </td>
 <td style="text-align:center;">
-0.03
+0.43
 </td>
 <td style="text-align:center;">
--3.09
+-4.03
 </td>
 </tr>
 <tr>
@@ -1424,10 +1592,10 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.47
 </td>
 <td style="text-align:center;">
--2.92
+-3.95
 </td>
 </tr>
 <tr>
@@ -1441,10 +1609,10 @@ t_observed
 -0.09
 </td>
 <td style="text-align:center;">
-0.01
+0.46
 </td>
 <td style="text-align:center;">
--2.09
+-2.82
 </td>
 </tr>
 <tr>
@@ -1458,10 +1626,10 @@ t_observed
 -0.09
 </td>
 <td style="text-align:center;">
-0.01
+0.38
 </td>
 <td style="text-align:center;">
--1.99
+-2.51
 </td>
 </tr>
 <tr>
@@ -1475,10 +1643,10 @@ t_observed
 -0.18
 </td>
 <td style="text-align:center;">
-0.06
+0.45
 </td>
 <td style="text-align:center;">
--4.63
+-6.07
 </td>
 </tr>
 <tr>
@@ -1492,10 +1660,10 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.03
+0.44
 </td>
 <td style="text-align:center;">
--3.47
+-4.55
 </td>
 </tr>
 <tr>
@@ -1509,10 +1677,27 @@ t_observed
 -0.25
 </td>
 <td style="text-align:center;">
-0.05
+0.35
 </td>
 <td style="text-align:center;">
--4.46
+-5.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+73
+</td>
+<td style="text-align:center;">
+375
+</td>
+<td style="text-align:center;">
+-0.08
+</td>
+<td style="text-align:center;">
+0.42
+</td>
+<td style="text-align:center;">
+-2.26
 </td>
 </tr>
 <tr>
@@ -1526,10 +1711,10 @@ t_observed
 -0.09
 </td>
 <td style="text-align:center;">
-0.01
+0.24
 </td>
 <td style="text-align:center;">
--2.17
+-2.48
 </td>
 </tr>
 <tr>
@@ -1543,10 +1728,27 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.03
+0.31
 </td>
 <td style="text-align:center;">
--3.64
+-4.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+84
+</td>
+<td style="text-align:center;">
+430
+</td>
+<td style="text-align:center;">
+-0.08
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+-2.30
 </td>
 </tr>
 <tr>
@@ -1560,10 +1762,10 @@ t_observed
 -0.12
 </td>
 <td style="text-align:center;">
-0.01
+0.17
 </td>
 <td style="text-align:center;">
--2.18
+-2.39
 </td>
 </tr>
 <tr>
@@ -1577,10 +1779,10 @@ t_observed
 -0.25
 </td>
 <td style="text-align:center;">
-0.05
+0.21
 </td>
 <td style="text-align:center;">
--4.63
+-5.08
 </td>
 </tr>
 <tr>
@@ -1594,10 +1796,10 @@ t_observed
 -0.23
 </td>
 <td style="text-align:center;">
-0.05
+0.22
 </td>
 <td style="text-align:center;">
--4.86
+-5.36
 </td>
 </tr>
 <tr>
@@ -1611,10 +1813,10 @@ t_observed
 -0.16
 </td>
 <td style="text-align:center;">
-0.03
+0.22
 </td>
 <td style="text-align:center;">
--4.09
+-4.55
 </td>
 </tr>
 <tr>
@@ -1628,10 +1830,10 @@ t_observed
 -0.11
 </td>
 <td style="text-align:center;">
-0.02
+0.21
 </td>
 <td style="text-align:center;">
--2.97
+-3.31
 </td>
 </tr>
 <tr>
@@ -1645,10 +1847,10 @@ t_observed
 -0.09
 </td>
 <td style="text-align:center;">
-0.01
+0.19
 </td>
 <td style="text-align:center;">
--2.17
+-2.40
 </td>
 </tr>
 <tr>
@@ -1662,10 +1864,10 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.19
 </td>
 <td style="text-align:center;">
--2.86
+-3.16
 </td>
 </tr>
 <tr>
@@ -1679,10 +1881,10 @@ t_observed
 -0.32
 </td>
 <td style="text-align:center;">
-0.07
+0.22
 </td>
 <td style="text-align:center;">
--5.82
+-6.37
 </td>
 </tr>
 <tr>
@@ -1696,10 +1898,10 @@ t_observed
 -0.41
 </td>
 <td style="text-align:center;">
-0.12
+0.29
 </td>
 <td style="text-align:center;">
--8.36
+-9.29
 </td>
 </tr>
 <tr>
@@ -1713,10 +1915,10 @@ t_observed
 -0.38
 </td>
 <td style="text-align:center;">
-0.13
+0.30
 </td>
 <td style="text-align:center;">
--8.43
+-9.45
 </td>
 </tr>
 <tr>
@@ -1730,10 +1932,10 @@ t_observed
 -0.26
 </td>
 <td style="text-align:center;">
-0.06
+0.23
 </td>
 <td style="text-align:center;">
--5.50
+-6.10
 </td>
 </tr>
 <tr>
@@ -1747,10 +1949,10 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.18
 </td>
 <td style="text-align:center;">
--2.91
+-3.18
 </td>
 </tr>
 <tr>
@@ -1764,10 +1966,10 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.19
 </td>
 <td style="text-align:center;">
--2.95
+-3.24
 </td>
 </tr>
 <tr>
@@ -1781,10 +1983,10 @@ t_observed
 -0.14
 </td>
 <td style="text-align:center;">
-0.02
+0.18
 </td>
 <td style="text-align:center;">
--3.07
+-3.36
 </td>
 </tr>
 <tr>
@@ -1798,10 +2000,10 @@ t_observed
 -0.15
 </td>
 <td style="text-align:center;">
-0.03
+0.18
 </td>
 <td style="text-align:center;">
--3.69
+-4.03
 </td>
 </tr>
 <tr>
@@ -1815,10 +2017,10 @@ t_observed
 -0.19
 </td>
 <td style="text-align:center;">
-0.05
+0.19
 </td>
 <td style="text-align:center;">
--5.11
+-5.55
 </td>
 </tr>
 <tr>
@@ -1832,10 +2034,10 @@ t_observed
 -0.25
 </td>
 <td style="text-align:center;">
-0.08
+0.21
 </td>
 <td style="text-align:center;">
--6.96
+-7.50
 </td>
 </tr>
 <tr>
@@ -1849,10 +2051,10 @@ t_observed
 -0.29
 </td>
 <td style="text-align:center;">
-0.11
+0.24
 </td>
 <td style="text-align:center;">
--8.23
+-8.88
 </td>
 </tr>
 <tr>
@@ -1866,10 +2068,10 @@ t_observed
 -0.31
 </td>
 <td style="text-align:center;">
-0.12
+0.23
 </td>
 <td style="text-align:center;">
--8.47
+-9.09
 </td>
 </tr>
 <tr>
@@ -1883,10 +2085,10 @@ t_observed
 -0.36
 </td>
 <td style="text-align:center;">
-0.13
+0.23
 </td>
 <td style="text-align:center;">
--8.83
+-9.43
 </td>
 </tr>
 <tr>
@@ -1900,10 +2102,10 @@ t_observed
 -0.34
 </td>
 <td style="text-align:center;">
-0.10
+0.20
 </td>
 <td style="text-align:center;">
--7.98
+-8.47
 </td>
 </tr>
 <tr>
@@ -1917,10 +2119,10 @@ t_observed
 -0.30
 </td>
 <td style="text-align:center;">
-0.07
+0.16
 </td>
 <td style="text-align:center;">
--6.55
+-6.88
 </td>
 </tr>
 <tr>
@@ -1934,10 +2136,10 @@ t_observed
 -0.28
 </td>
 <td style="text-align:center;">
-0.06
+0.13
 </td>
 <td style="text-align:center;">
--5.76
+-6.01
 </td>
 </tr>
 <tr>
@@ -1951,10 +2153,10 @@ t_observed
 -0.32
 </td>
 <td style="text-align:center;">
-0.06
+0.13
 </td>
 <td style="text-align:center;">
--5.95
+-6.18
 </td>
 </tr>
 <tr>
@@ -1968,10 +2170,10 @@ t_observed
 -0.34
 </td>
 <td style="text-align:center;">
-0.06
+0.13
 </td>
 <td style="text-align:center;">
--6.18
+-6.42
 </td>
 </tr>
 <tr>
@@ -1985,10 +2187,10 @@ t_observed
 -0.37
 </td>
 <td style="text-align:center;">
-0.07
+0.14
 </td>
 <td style="text-align:center;">
--6.67
+-6.94
 </td>
 </tr>
 <tr>
@@ -2002,10 +2204,10 @@ t_observed
 -0.47
 </td>
 <td style="text-align:center;">
-0.11
+0.17
 </td>
 <td style="text-align:center;">
--8.41
+-8.74
 </td>
 </tr>
 <tr>
@@ -2019,10 +2221,10 @@ t_observed
 -0.58
 </td>
 <td style="text-align:center;">
-0.17
+0.24
 </td>
 <td style="text-align:center;">
--10.79
+-11.28
 </td>
 </tr>
 <tr>
@@ -2036,10 +2238,10 @@ t_observed
 -0.60
 </td>
 <td style="text-align:center;">
-0.20
+0.27
 </td>
 <td style="text-align:center;">
--12.04
+-12.64
 </td>
 </tr>
 <tr>
@@ -2053,10 +2255,10 @@ t_observed
 -0.54
 </td>
 <td style="text-align:center;">
-0.19
+0.27
 </td>
 <td style="text-align:center;">
--11.90
+-12.50
 </td>
 </tr>
 <tr>
@@ -2070,10 +2272,10 @@ t_observed
 -0.52
 </td>
 <td style="text-align:center;">
-0.21
+0.28
 </td>
 <td style="text-align:center;">
--12.45
+-13.11
 </td>
 </tr>
 <tr>
@@ -2087,10 +2289,10 @@ t_observed
 -0.46
 </td>
 <td style="text-align:center;">
-0.18
+0.26
 </td>
 <td style="text-align:center;">
--11.66
+-12.24
 </td>
 </tr>
 <tr>
@@ -2104,10 +2306,10 @@ t_observed
 -0.43
 </td>
 <td style="text-align:center;">
-0.18
+0.25
 </td>
 <td style="text-align:center;">
--11.51
+-12.08
 </td>
 </tr>
 <tr>
@@ -2121,10 +2323,10 @@ t_observed
 -0.37
 </td>
 <td style="text-align:center;">
-0.15
+0.23
 </td>
 <td style="text-align:center;">
--10.54
+-11.06
 </td>
 </tr>
 <tr>
@@ -2138,10 +2340,10 @@ t_observed
 -0.32
 </td>
 <td style="text-align:center;">
-0.11
+0.19
 </td>
 <td style="text-align:center;">
--8.97
+-9.38
 </td>
 </tr>
 <tr>
@@ -2155,10 +2357,10 @@ t_observed
 -0.33
 </td>
 <td style="text-align:center;">
-0.11
+0.18
 </td>
 <td style="text-align:center;">
--8.63
+-9.02
 </td>
 </tr>
 <tr>
@@ -2172,10 +2374,10 @@ t_observed
 -0.40
 </td>
 <td style="text-align:center;">
-0.12
+0.19
 </td>
 <td style="text-align:center;">
--9.32
+-9.73
 </td>
 </tr>
 <tr>
@@ -2189,10 +2391,10 @@ t_observed
 -0.55
 </td>
 <td style="text-align:center;">
-0.18
+0.25
 </td>
 <td style="text-align:center;">
--11.84
+-12.37
 </td>
 </tr>
 <tr>
@@ -2206,10 +2408,10 @@ t_observed
 -0.63
 </td>
 <td style="text-align:center;">
-0.22
+0.29
 </td>
 <td style="text-align:center;">
--13.51
+-14.14
 </td>
 </tr>
 <tr>
@@ -2223,10 +2425,10 @@ t_observed
 -0.69
 </td>
 <td style="text-align:center;">
-0.26
+0.33
 </td>
 <td style="text-align:center;">
--15.23
+-15.91
 </td>
 </tr>
 <tr>
@@ -2240,10 +2442,10 @@ t_observed
 -0.68
 </td>
 <td style="text-align:center;">
-0.27
+0.33
 </td>
 <td style="text-align:center;">
--15.59
+-16.31
 </td>
 </tr>
 <tr>
@@ -2257,10 +2459,10 @@ t_observed
 -0.62
 </td>
 <td style="text-align:center;">
-0.25
+0.31
 </td>
 <td style="text-align:center;">
--14.69
+-15.37
 </td>
 </tr>
 <tr>
@@ -2274,10 +2476,10 @@ t_observed
 -0.55
 </td>
 <td style="text-align:center;">
-0.20
+0.27
 </td>
 <td style="text-align:center;">
--13.00
+-13.58
 </td>
 </tr>
 <tr>
@@ -2291,10 +2493,10 @@ t_observed
 -0.44
 </td>
 <td style="text-align:center;">
-0.13
+0.19
 </td>
 <td style="text-align:center;">
--9.75
+-10.13
 </td>
 </tr>
 <tr>
@@ -2308,10 +2510,10 @@ t_observed
 -0.31
 </td>
 <td style="text-align:center;">
-0.06
+0.12
 </td>
 <td style="text-align:center;">
--6.45
+-6.66
 </td>
 </tr>
 <tr>
@@ -2325,10 +2527,10 @@ t_observed
 -0.23
 </td>
 <td style="text-align:center;">
-0.03
+0.08
 </td>
 <td style="text-align:center;">
--4.47
+-4.60
 </td>
 </tr>
 <tr>
@@ -2342,10 +2544,10 @@ t_observed
 -0.19
 </td>
 <td style="text-align:center;">
-0.02
+0.07
 </td>
 <td style="text-align:center;">
--3.64
+-3.74
 </td>
 </tr>
 <tr>
@@ -2359,10 +2561,10 @@ t_observed
 -0.18
 </td>
 <td style="text-align:center;">
-0.02
+0.07
 </td>
 <td style="text-align:center;">
--3.48
+-3.57
 </td>
 </tr>
 <tr>
@@ -2376,10 +2578,10 @@ t_observed
 -0.19
 </td>
 <td style="text-align:center;">
-0.02
+0.07
 </td>
 <td style="text-align:center;">
--3.57
+-3.67
 </td>
 </tr>
 <tr>
@@ -2393,10 +2595,10 @@ t_observed
 -0.21
 </td>
 <td style="text-align:center;">
-0.02
+0.07
 </td>
 <td style="text-align:center;">
--4.11
+-4.22
 </td>
 </tr>
 <tr>
@@ -2410,10 +2612,10 @@ t_observed
 -0.25
 </td>
 <td style="text-align:center;">
-0.04
+0.09
 </td>
 <td style="text-align:center;">
--5.23
+-5.38
 </td>
 </tr>
 <tr>
@@ -2427,10 +2629,10 @@ t_observed
 -0.27
 </td>
 <td style="text-align:center;">
-0.05
+0.10
 </td>
 <td style="text-align:center;">
--6.15
+-6.34
 </td>
 </tr>
 <tr>
@@ -2444,10 +2646,10 @@ t_observed
 -0.29
 </td>
 <td style="text-align:center;">
-0.07
+0.13
 </td>
 <td style="text-align:center;">
--7.20
+-7.44
 </td>
 </tr>
 <tr>
@@ -2461,10 +2663,10 @@ t_observed
 -0.31
 </td>
 <td style="text-align:center;">
-0.09
+0.15
 </td>
 <td style="text-align:center;">
--8.20
+-8.48
 </td>
 </tr>
 <tr>
@@ -2478,10 +2680,10 @@ t_observed
 -0.28
 </td>
 <td style="text-align:center;">
-0.08
+0.15
 </td>
 <td style="text-align:center;">
--8.05
+-8.35
 </td>
 </tr>
 <tr>
@@ -2495,10 +2697,10 @@ t_observed
 -0.26
 </td>
 <td style="text-align:center;">
-0.08
+0.14
 </td>
 <td style="text-align:center;">
--7.68
+-7.94
 </td>
 </tr>
 <tr>
@@ -2512,10 +2714,10 @@ t_observed
 -0.23
 </td>
 <td style="text-align:center;">
-0.06
+0.12
 </td>
 <td style="text-align:center;">
--6.87
+-7.11
 </td>
 </tr>
 <tr>
@@ -2529,10 +2731,10 @@ t_observed
 -0.20
 </td>
 <td style="text-align:center;">
-0.05
+0.11
 </td>
 <td style="text-align:center;">
--6.00
+-6.21
 </td>
 </tr>
 <tr>
@@ -2546,10 +2748,10 @@ t_observed
 -0.17
 </td>
 <td style="text-align:center;">
-0.03
+0.10
 </td>
 <td style="text-align:center;">
--5.09
+-5.27
 </td>
 </tr>
 <tr>
@@ -2563,10 +2765,10 @@ t_observed
 -0.16
 </td>
 <td style="text-align:center;">
-0.03
+0.09
 </td>
 <td style="text-align:center;">
--4.42
+-4.56
 </td>
 </tr>
 <tr>
@@ -2580,10 +2782,10 @@ t_observed
 -0.18
 </td>
 <td style="text-align:center;">
-0.03
+0.09
 </td>
 <td style="text-align:center;">
--4.68
+-4.83
 </td>
 </tr>
 <tr>
@@ -2597,10 +2799,10 @@ t_observed
 -0.23
 </td>
 <td style="text-align:center;">
-0.04
+0.10
 </td>
 <td style="text-align:center;">
--5.55
+-5.73
 </td>
 </tr>
 <tr>
@@ -2614,10 +2816,10 @@ t_observed
 -0.27
 </td>
 <td style="text-align:center;">
-0.06
+0.11
 </td>
 <td style="text-align:center;">
--6.75
+-6.97
 </td>
 </tr>
 <tr>
@@ -2631,10 +2833,10 @@ t_observed
 -0.30
 </td>
 <td style="text-align:center;">
-0.07
+0.13
 </td>
 <td style="text-align:center;">
--7.67
+-7.93
 </td>
 </tr>
 <tr>
@@ -2648,10 +2850,10 @@ t_observed
 -0.29
 </td>
 <td style="text-align:center;">
-0.07
+0.13
 </td>
 <td style="text-align:center;">
--7.70
+-7.95
 </td>
 </tr>
 <tr>
@@ -2665,10 +2867,10 @@ t_observed
 -0.29
 </td>
 <td style="text-align:center;">
-0.07
+0.13
 </td>
 <td style="text-align:center;">
--7.78
+-8.02
 </td>
 </tr>
 <tr>
@@ -2682,10 +2884,10 @@ t_observed
 -0.32
 </td>
 <td style="text-align:center;">
-0.08
+0.13
 </td>
 <td style="text-align:center;">
--8.32
+-8.56
 </td>
 </tr>
 <tr>
@@ -2699,10 +2901,10 @@ t_observed
 -0.35
 </td>
 <td style="text-align:center;">
-0.09
+0.14
 </td>
 <td style="text-align:center;">
--8.79
+-9.03
 </td>
 </tr>
 <tr>
@@ -2716,10 +2918,10 @@ t_observed
 -0.39
 </td>
 <td style="text-align:center;">
-0.09
+0.14
 </td>
 <td style="text-align:center;">
--9.10
+-9.33
 </td>
 </tr>
 <tr>
@@ -2733,10 +2935,10 @@ t_observed
 -0.40
 </td>
 <td style="text-align:center;">
-0.10
+0.14
 </td>
 <td style="text-align:center;">
--9.14
+-9.37
 </td>
 </tr>
 <tr>
@@ -2750,10 +2952,10 @@ t_observed
 -0.39
 </td>
 <td style="text-align:center;">
-0.09
+0.13
 </td>
 <td style="text-align:center;">
--8.62
+-8.82
 </td>
 </tr>
 <tr>
@@ -2767,10 +2969,10 @@ t_observed
 -0.35
 </td>
 <td style="text-align:center;">
-0.07
+0.11
 </td>
 <td style="text-align:center;">
--7.66
+-7.83
 </td>
 </tr>
 <tr>
@@ -2784,10 +2986,10 @@ t_observed
 -0.36
 </td>
 <td style="text-align:center;">
-0.07
+0.11
 </td>
 <td style="text-align:center;">
--7.61
+-7.78
 </td>
 </tr>
 <tr>
@@ -2801,10 +3003,10 @@ t_observed
 -0.39
 </td>
 <td style="text-align:center;">
-0.08
+0.12
 </td>
 <td style="text-align:center;">
--8.15
+-8.34
 </td>
 </tr>
 <tr>
@@ -2818,10 +3020,10 @@ t_observed
 -0.42
 </td>
 <td style="text-align:center;">
-0.09
+0.13
 </td>
 <td style="text-align:center;">
--8.96
+-9.17
 </td>
 </tr>
 <tr>
@@ -2835,10 +3037,10 @@ t_observed
 -0.46
 </td>
 <td style="text-align:center;">
-0.10
+0.14
 </td>
 <td style="text-align:center;">
--9.77
+-9.99
 </td>
 </tr>
 <tr>
@@ -2852,10 +3054,10 @@ t_observed
 -0.50
 </td>
 <td style="text-align:center;">
-0.13
+0.16
 </td>
 <td style="text-align:center;">
--10.91
+-11.13
 </td>
 </tr>
 <tr>
@@ -2869,10 +3071,10 @@ t_observed
 -0.52
 </td>
 <td style="text-align:center;">
-0.14
+0.18
 </td>
 <td style="text-align:center;">
--11.88
+-12.12
 </td>
 </tr>
 <tr>
@@ -2886,10 +3088,10 @@ t_observed
 -0.53
 </td>
 <td style="text-align:center;">
-0.16
+0.19
 </td>
 <td style="text-align:center;">
--12.56
+-12.82
 </td>
 </tr>
 <tr>
@@ -2903,10 +3105,10 @@ t_observed
 -0.52
 </td>
 <td style="text-align:center;">
-0.16
+0.19
 </td>
 <td style="text-align:center;">
--12.78
+-13.03
 </td>
 </tr>
 <tr>
@@ -2920,10 +3122,10 @@ t_observed
 -0.50
 </td>
 <td style="text-align:center;">
-0.16
+0.19
 </td>
 <td style="text-align:center;">
--12.75
+-12.99
 </td>
 </tr>
 <tr>
@@ -2937,10 +3139,10 @@ t_observed
 -0.48
 </td>
 <td style="text-align:center;">
-0.16
+0.19
 </td>
 <td style="text-align:center;">
--12.71
+-12.95
 </td>
 </tr>
 <tr>
@@ -2954,10 +3156,10 @@ t_observed
 -0.45
 </td>
 <td style="text-align:center;">
-0.15
+0.18
 </td>
 <td style="text-align:center;">
--12.39
+-12.62
 </td>
 </tr>
 <tr>
@@ -2971,10 +3173,10 @@ t_observed
 -0.41
 </td>
 <td style="text-align:center;">
-0.14
+0.16
 </td>
 <td style="text-align:center;">
--11.65
+-11.85
 </td>
 </tr>
 <tr>
@@ -2988,10 +3190,10 @@ t_observed
 -0.37
 </td>
 <td style="text-align:center;">
-0.12
+0.15
 </td>
 <td style="text-align:center;">
--10.77
+-10.95
 </td>
 </tr>
 <tr>
@@ -3005,10 +3207,10 @@ t_observed
 -0.34
 </td>
 <td style="text-align:center;">
-0.10
+0.13
 </td>
 <td style="text-align:center;">
--9.93
+-10.09
 </td>
 </tr>
 <tr>
@@ -3022,10 +3224,10 @@ t_observed
 -0.31
 </td>
 <td style="text-align:center;">
-0.09
+0.12
 </td>
 <td style="text-align:center;">
--9.26
+-9.41
 </td>
 </tr>
 <tr>
@@ -3039,10 +3241,10 @@ t_observed
 -0.29
 </td>
 <td style="text-align:center;">
-0.08
+0.11
 </td>
 <td style="text-align:center;">
--8.72
+-8.86
 </td>
 </tr>
 <tr>
@@ -3056,10 +3258,10 @@ t_observed
 -0.27
 </td>
 <td style="text-align:center;">
-0.07
+0.10
 </td>
 <td style="text-align:center;">
--8.09
+-8.22
 </td>
 </tr>
 <tr>
@@ -3073,10 +3275,10 @@ t_observed
 -0.26
 </td>
 <td style="text-align:center;">
-0.06
+0.09
 </td>
 <td style="text-align:center;">
--7.57
+-7.69
 </td>
 </tr>
 <tr>
@@ -3090,10 +3292,10 @@ t_observed
 -0.26
 </td>
 <td style="text-align:center;">
-0.06
+0.09
 </td>
 <td style="text-align:center;">
--7.37
+-7.48
 </td>
 </tr>
 <tr>
@@ -3107,10 +3309,10 @@ t_observed
 -0.27
 </td>
 <td style="text-align:center;">
-0.06
+0.09
 </td>
 <td style="text-align:center;">
--7.62
+-7.75
 </td>
 </tr>
 <tr>
@@ -3124,10 +3326,10 @@ t_observed
 -0.30
 </td>
 <td style="text-align:center;">
-0.07
+0.10
 </td>
 <td style="text-align:center;">
--8.15
+-8.29
 </td>
 </tr>
 <tr>
@@ -3141,10 +3343,10 @@ t_observed
 -0.33
 </td>
 <td style="text-align:center;">
-0.08
+0.11
 </td>
 <td style="text-align:center;">
--8.91
+-9.06
 </td>
 </tr>
 <tr>
@@ -3158,10 +3360,10 @@ t_observed
 -0.36
 </td>
 <td style="text-align:center;">
-0.10
+0.13
 </td>
 <td style="text-align:center;">
--9.98
+-10.15
 </td>
 </tr>
 <tr>
@@ -3175,10 +3377,10 @@ t_observed
 -0.42
 </td>
 <td style="text-align:center;">
-0.13
+0.16
 </td>
 <td style="text-align:center;">
--11.63
+-11.84
 </td>
 </tr>
 <tr>
@@ -3192,10 +3394,10 @@ t_observed
 -0.50
 </td>
 <td style="text-align:center;">
-0.17
+0.20
 </td>
 <td style="text-align:center;">
--13.94
+-14.20
 </td>
 </tr>
 <tr>
@@ -3209,10 +3411,10 @@ t_observed
 -0.58
 </td>
 <td style="text-align:center;">
-0.23
+0.26
 </td>
 <td style="text-align:center;">
--16.67
+-17.01
 </td>
 </tr>
 <tr>
@@ -3226,10 +3428,10 @@ t_observed
 -0.66
 </td>
 <td style="text-align:center;">
-0.29
+0.32
 </td>
 <td style="text-align:center;">
--19.71
+-20.14
 </td>
 </tr>
 <tr>
@@ -3243,10 +3445,10 @@ t_observed
 -0.71
 </td>
 <td style="text-align:center;">
-0.35
+0.38
 </td>
 <td style="text-align:center;">
--22.76
+-23.32
 </td>
 </tr>
 <tr>
@@ -3260,10 +3462,10 @@ t_observed
 -0.74
 </td>
 <td style="text-align:center;">
-0.41
+0.44
 </td>
 <td style="text-align:center;">
--25.64
+-26.35
 </td>
 </tr>
 <tr>
@@ -3277,10 +3479,10 @@ t_observed
 -0.74
 </td>
 <td style="text-align:center;">
-0.44
+0.47
 </td>
 <td style="text-align:center;">
--27.43
+-28.26
 </td>
 </tr>
 <tr>
@@ -3294,10 +3496,10 @@ t_observed
 -0.71
 </td>
 <td style="text-align:center;">
-0.44
+0.48
 </td>
 <td style="text-align:center;">
--27.71
+-28.60
 </td>
 </tr>
 <tr>
@@ -3311,10 +3513,10 @@ t_observed
 -0.67
 </td>
 <td style="text-align:center;">
-0.41
+0.45
 </td>
 <td style="text-align:center;">
--25.95
+-26.76
 </td>
 </tr>
 <tr>
@@ -3328,10 +3530,10 @@ t_observed
 -0.63
 </td>
 <td style="text-align:center;">
-0.39
+0.42
 </td>
 <td style="text-align:center;">
--24.72
+-25.38
 </td>
 </tr>
 <tr>
@@ -3345,10 +3547,10 @@ t_observed
 -0.60
 </td>
 <td style="text-align:center;">
-0.35
+0.39
 </td>
 <td style="text-align:center;">
--23.14
+-23.74
 </td>
 </tr>
 <tr>
@@ -3362,10 +3564,10 @@ t_observed
 -0.57
 </td>
 <td style="text-align:center;">
-0.31
+0.35
 </td>
 <td style="text-align:center;">
--21.19
+-21.71
 </td>
 </tr>
 <tr>
@@ -3379,10 +3581,10 @@ t_observed
 -0.55
 </td>
 <td style="text-align:center;">
-0.27
+0.30
 </td>
 <td style="text-align:center;">
--19.05
+-19.49
 </td>
 </tr>
 <tr>
@@ -3396,10 +3598,10 @@ t_observed
 -0.52
 </td>
 <td style="text-align:center;">
-0.22
+0.26
 </td>
 <td style="text-align:center;">
--16.91
+-17.27
 </td>
 </tr>
 <tr>
@@ -3413,10 +3615,10 @@ t_observed
 -0.46
 </td>
 <td style="text-align:center;">
-0.17
+0.20
 </td>
 <td style="text-align:center;">
--14.22
+-14.50
 </td>
 </tr>
 <tr>
@@ -3430,10 +3632,10 @@ t_observed
 -0.44
 </td>
 <td style="text-align:center;">
-0.14
+0.17
 </td>
 <td style="text-align:center;">
--12.58
+-12.80
 </td>
 </tr>
 </tbody>
@@ -3451,7 +3653,7 @@ y <- scales
 image.plot(x, y, mlra.out.emp$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Multiscale Lagged Regression Analysis Hand Movements")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-37-1.png)
 
 ``` r
 #contour(x, y, mlra.out,levels=seq(0,1,by=1),add=TRUE,col='black')
@@ -3488,3 +3690,4 @@ image.plot(x, y, mlra.out.emp$betas, axes=TRUE, legend.lab = "Beta Coefficient",
     Beyond synchrony: joint action in a complex production task reveals
     beneficial effects of decreased interpersonal synchrony. PloS one,
     11(12), e0168306.
+
