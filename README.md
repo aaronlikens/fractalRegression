@@ -134,7 +134,7 @@ Next we are going to work with data that we include in our package
 includes a white noise time series, monofractal time series, and a
 multifractal time series.
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-10-1.png)
 
 Now let’s run MFDFA on these times series. In this case we replicate the
 choice of parameters in Ihlen (2012) with a q range of -5 to 5, and
@@ -167,7 +167,7 @@ mfdfa.plot(mono.mf.dfa.out)
 
     ## Loading required package: colorRamps
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-13-1.png)
 
 Now let’s compare the above plot for the monofractal and multifractal
 results. In comparing, the top left part of both plots, we see that the
@@ -178,7 +178,7 @@ to the monofractal case.
 mfdfa.plot(multi.mf.dfa.out)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-15-1.png)
 It’s also common to examine the relationship between Hq and q as well as
 H and D(H). We can see the comparison in the bottom right of the two
 figures above, and the relative difference in the widths of the
@@ -192,7 +192,7 @@ lines(multi.mf.dfa.out$h,multi.mf.dfa.out$Dh, type='b', pch=19,lwd=3, col="blue"
 legend(-.85,1, legend = c("Monofractal", "Multifractal"), col=c("black", "blue"), lwd=3)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-17-1.png)
 
 A common metric for comparing the multifractal spectrum is to calculate
 the width (W) as the *h*<sub>*m**a**x*</sub> − *h*<sub>*m**i**n*</sub>.
@@ -248,7 +248,7 @@ plot(sim1[,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA
 lines(sim1[,2], col='blue')
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-21-1.png)
 
 ### Run DCCA on the MC-ARFIMA with LRC and LRCC
 
@@ -262,7 +262,7 @@ dcca.plot <- ggplot(data=dcca.out.arfima, aes(x=scales,y=rho)) + geom_point() +g
 dcca.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-22-1.png)
 
 In the above figure, we see that the correlation between the MC-ARFIMA
 processes are consistently high and continue to be high at increasing
@@ -279,7 +279,7 @@ plot(sim2[,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA
 lines(sim2[,2], col='blue')
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-23-1.png)
 
 ### Run DCCA on the MC-ARFIMA with LRC and SRCC
 
@@ -293,7 +293,7 @@ dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() 
 dcca.plot2
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-24-1.png)
 
 In contrast to the previous DCCA analysis, the above figure shows a
 signal that begins with a high cross-correlation, but that begins to
@@ -318,7 +318,7 @@ mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_lin
 mra.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-25-1.png)
 
 Generally, we observe that the *β* coefficients are relatively stable at
 increasing time scales with a general, perhaps quadratically increasing
@@ -1059,7 +1059,7 @@ colfunc <- colorRampPalette(c("green", "red"))
 graphics::matplot(mlra.out$betas, type='l', col = colfunc(49), ylab="Beta Coefficient", xlab='Lag', main="Multiscale Lagged Regression Analysis")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-27-1.png)
 
 The figure above shows that there is high *β* values across scales only
 for lags near to 0. But, it’s difficult to see the scale-wise variation
@@ -1075,7 +1075,7 @@ y <- scales
 image.plot(x, y, mlra.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Multiscale Lagged Regression Analysis")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-28-1.png)
 
 ``` r
 #contour(x, y, mlra.out,levels=seq(0,1,by=1),add=TRUE,col='black')
@@ -1109,7 +1109,7 @@ plot(handmovement$P1_TT_d, type='l', main = "Dominant hand-movement velocity pro
 lines(handmovement$P2_TT_d, col=2)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-29-1.png)
 
 ## MF-DFA on Empirical Data
 
@@ -1153,7 +1153,7 @@ lines(mf.dfa.P2hand.out$h,mf.dfa.P2hand.out$Dh, type='b', pch=19,lwd=3, col="blu
 legend(-.85,1, legend = c("P1", "P2"), col=c("black", "blue"), lwd=3)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-31-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-31-1.png)
 
 ``` r
 P1.W <- max(mf.dfa.P1hand.out$h) - min(mf.dfa.P1hand.out$h)
@@ -1178,7 +1178,7 @@ general.
 ccf(handmovement$P1_TT_d, handmovement$P2_TT_d, lag.max = 500, main = "Cross-correlation function of P1 and P2 Hand Movements")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-33-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-33-1.png)
 
 It appears that there might be some lagged relationship between the two
 signals. Now, we can run and examine the results of `dcca()` examining
@@ -1198,7 +1198,7 @@ plot(dcca.out$scales, dcca.out$rho, type = 'b', pch = 16, xlab = 'Scale',
      ylab = expression(rho))
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-34-1.png)
 
 ``` r
 # dcca.plot
@@ -1223,7 +1223,7 @@ mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_lin
 mra.plot
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-35-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-35-1.png)
 
 In the table below, we filter out those *β* coefficients, whose
 corresponding t-values are greater than +/- 1.96 to provide an index of
@@ -3653,7 +3653,7 @@ y <- scales
 image.plot(x, y, mlra.out.emp$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Multiscale Lagged Regression Analysis Hand Movements")
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-37-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-37-1.png)
 
 ``` r
 #contour(x, y, mlra.out,levels=seq(0,1,by=1),add=TRUE,col='black')
