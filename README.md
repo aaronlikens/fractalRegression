@@ -9,8 +9,6 @@ available there, it can be installed withe the following:
 install.packages("fractalRegression")
 ```
 
-    ## Warning: package 'fractalRegression' is in use and will not be installed
-
 The development version is available on Aaron Likens’ Github
 (<https://github.com/aaronlikens/fractalRegression>) and can be
 installed using R devtools. This is a source package and requires
@@ -19,7 +17,7 @@ package to get necessary components:
 <https://cran.r-project.org/bin/windows/Rtools/>
 
 ``` r
-#devtools::install_github("aaronlikens/fractalRegression")
+devtools::install_github("aaronlikens/fractalRegression")
 ```
 
 ## Introduction
@@ -3692,3 +3690,4 @@ image.plot(x, y, mlra.out.emp$betas, axes=TRUE, legend.lab = "Beta Coefficient",
     Beyond synchrony: joint action in a complex production task reveals
     beneficial effects of decreased interpersonal synchrony. PloS one,
     11(12), e0168306.
+
