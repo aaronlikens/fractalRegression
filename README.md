@@ -94,7 +94,7 @@ dfa.plot(dfa.pink.out)
 dfa.plot(dfa.anticorr.out)
 ```
 
-![](fractalRegression_vignette_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-7-1.png)
 
 ## Multifractal Detrended Fluctuation Analysis
 
