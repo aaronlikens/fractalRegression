@@ -184,15 +184,6 @@ H and D(H). We can see the comparison in the bottom right of the two
 figures above, and the relative difference in the widths of the
 mutlifractal spectra.
 
-``` r
-## Old Code ##
-# Create the plot 
-plot(mono.mf.dfa.out$h,mono.mf.dfa.out$Dh, type='b', lwd=1, lty=2, pch=19,ylim=c(-0.4,1),xlim=c(-.8,.8), ylab="D(h)", xlab="h", main= "Multifractal Spectrum for Mono- and Multi-fractal Signals")
-lines(multi.mf.dfa.out$h,multi.mf.dfa.out$Dh, type='b', pch=19,lwd=3, col="blue")
-legend(-.85,1, legend = c("Monofractal", "Multifractal"), col=c("black", "blue"), lwd=3)
-```
-
-![](fractalRegression_vignette_files/figure-markdown-github/unnamed-chunk-17-1.png)
 
 A common metric for comparing the multifractal spectrum is to calculate
 the width (W) as the *h*<sub>*m**a**x*</sub> − *h*<sub>*m**i**n*</sub>.
