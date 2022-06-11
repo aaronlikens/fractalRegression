@@ -14,7 +14,8 @@ using namespace Rcpp;
 //' 
 //' @param x A real valued vector (i.e., time series data) to be analyzed. 
 //' @param q A real valued vector indicating the statistical moments (q) to use 
-//' in the analysis.
+//' in the analysis. q must span negative and positive values e.g., -3:3, 
+//' otherwise and error may be produced. 
 //' @param order is an integer indicating the polynomial order used for 
 //' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 //' is not pre-determined limit on the order of the polynomial order but the 
