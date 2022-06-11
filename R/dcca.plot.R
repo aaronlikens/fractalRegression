@@ -56,6 +56,8 @@ dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL,
          ylab = expression(rho(s)), ylim = c(ymin, ymax))
     lines(rhos$scales, cis[1,], col = 'red')
     lines(rhos$scales, cis[2,], col = 'red')
+    legend('topright',legend = c(expression(rho(s)),'Surrogate CI'), lty = 1,
+           col = c('black', 'red'))
   }
   par(op)
   if (return.ci){

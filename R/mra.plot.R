@@ -57,6 +57,8 @@ mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
          ylab = expression(beta(s)), ylim = c(ymin, ymax))
     lines(betas$scales, cis[1,], col = 'red')
     lines(betas$scales, cis[2,], col = 'red')
+    legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
+           col = c('black', 'red'))
   }
   par(op)
   
