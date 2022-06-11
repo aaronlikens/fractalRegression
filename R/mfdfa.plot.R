@@ -48,7 +48,7 @@ mfdfa.plot = function(mf){
     
     # plot the generalized Hurst exponents as a function of q
     plot(mf$q, mf$Hq, pch = 16,xlab = 'q', ylab = 'H(q)', col = cols,
-         tck = .03, ylim = c(0.0, 1.2))
+         tck = .03)
     
     # draw cross-hairs to to indicate the standard Hurst exponent derived from
     # monofractal detrended fluctuation anaysis
