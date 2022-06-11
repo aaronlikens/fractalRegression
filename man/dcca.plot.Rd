@@ -4,7 +4,7 @@
 \alias{dcca.plot}
 \title{Detrended Cross Correlation Plot}
 \usage{
-dcca.plot(rhos, order = 1, ci = FALSE, iterations = NULL)
+dcca.plot(rhos, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
 }
 \arguments{
 \item{rhos}{an object containing  results from detrended cross correlation

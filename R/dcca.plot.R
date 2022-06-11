@@ -18,7 +18,8 @@
 #' @param return.ci logical indicating whether the confidence intervals 
 #' should be returned
 #' @export
-dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL){
+dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL,
+                     return.ci = FALSE){
   op = par(no.readonly = TRUE)
   par(mar = c(5,5,.5,1),
       cex.lab = 1.5,

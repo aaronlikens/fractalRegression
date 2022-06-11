@@ -2,8 +2,7 @@
 % Please edit documentation in R/logscale.R
 \name{logscale}
 \alias{logscale}
-\title{logscale
-Create logarithmically spaced scales}
+\title{logscale}
 \usage{
 logscale(scale_min, scale_max, scale_ratio)
 }
@@ -12,11 +11,17 @@ logscale(scale_min, scale_max, scale_ratio)
 
 \item{scale_max}{an integer indicating the maximum scale to be resolved}
 
-\item{scale_ratio}{a double indiciting the ratio by which scale successive 
+\item{scale_ratio}{a double indicating the ratio by which scale successive 
 scales. For example, scale_ratio = 2 would create a scales increasing by 
 a power of 2.}
 }
+\value{
+A vector of of logarithmically spaced scales.
+}
 \description{
-logscale
 Create logarithmically spaced scales
+}
+\examples{
+scales <- logspace(scale_min = 16, scale_max = 1024, scale_ratio = 2)
+
 }
