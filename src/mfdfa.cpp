@@ -101,13 +101,12 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         
         //create vectors of scales and q values
         unsigned int qlength = q.n_elem;
-        arma::uvec q0indx = arma::find(abs(q) <= 1e-13,1); // may be incompatible
+        arma::uvec q0indx = arma::find(abs(q) <= 1e-8, 1); // may be incompatible
         bool q_contains_zero = arma::numel(q0indx) > 0;
         
         if (q_contains_zero) {
           q(q0indx(0)) = 0.0;  
         }
-        
         
         
         //do the detrending and return the RMSE for each of the ith scales
@@ -124,8 +123,8 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
             unsigned int numberOfBlocks = floor(len/window);
             arma::vec rms(numberOfBlocks);
             arma::mat qrms(numberOfBlocks,qlength);
-            arma::vec resid(indx.n_elem); //diff from original
-            arma::vec resid_sq(indx.n_elem); // diff from original
+            arma::vec resid(indx.n_elem); 
+            arma::vec resid_sq(indx.n_elem); 
            
             for (unsigned int v = 0; v < numberOfBlocks; ++v ){
               
@@ -148,11 +147,13 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
                 log_fq(ns,nq) = log2(fq(ns,nq));
 
             }
+            // TODO: address issue where q does not contain negative values
             if (q_contains_zero){
               log_fq(ns, q0indx(0)) = (log_fq(ns, q0indx(0)-1) + log_fq(ns, q0indx(0)+1))/2;  
             }
             
         }
+        
         
         //take the log2 of scales
         arma::vec log_scale(numberOfScales);

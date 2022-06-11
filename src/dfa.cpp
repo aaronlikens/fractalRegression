@@ -10,16 +10,19 @@ using namespace Rcpp;
 //' DFA is also a form of mono-fractal analysis that indicates the degree of self-similarity across temporal scales.
 //' 
 //' @param x A real valued vector (i.e., time series data) to be analyzed. 
+//' 
 //' @param order An integer indicating the polynomial order used for 
 //' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 //' is not a pre-determined limit on the order of the polynomial order but the 
 //' user should avoid using a large polynomial on small windows. This can result
 //' in overfitting and non-meaningful estimates. 
+//' 
 //' @param verbose If the value of verbose = 1, then a list object is returned 
 //' that includes: \code{log_scales} the log of all included scales, 
 //' \code{log_rms} the log root mean square error (RMS) per scale, 
 //' and \code{alpha} the overall \eqn{\alpha} estimate. If the value of 
 //' verbose = 0, then a list containing only `alpha` will be returned.
+//' 
 //' @param scales An integer valued vector indicating the scales one wishes to resolve
 //' in the analysis. Best practice is to use scales which are evenly spaced in 
 //' the logarithmic domain e.g., \code{scales = 2^(4:(N/4))}, where N is the length of the
@@ -27,13 +30,14 @@ using namespace Rcpp;
 //' resolution of scales while maintaining ~= spacing in the log domain e.g, 
 //' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 //' produce duplicate values after the necessary floor function.
+//' 
 //' @param scale_ratio A scaling factor by which successive window sizes were 
 //' were created. The default is 2 but should be addressed according to how 
 //' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
 //' where 1.1 is the scale ratio.
+//' 
 //' @import Rcpp
 //' @useDynLib fractalRegression
-//' @export
 //' 
 //' @details Details of the algorithm are specified in detail in Peng et al. (1994) and visualized nicely in Kelty-Stephen et al. (2016).
 //' The output of the algorithm is an \eqn{\alpha} (alpha) estimate which is a generalization of the Hurst Exponent. Conventional interpretation of \eqn{\alpha} is:
@@ -116,6 +120,7 @@ using namespace Rcpp;
 //' 
 //' 
 //' 
+//' @export
 // [[Rcpp::export]]
 List dfa(arma::vec x, int order, arma::uword verbose, 
              arma::uvec scales, double scale_ratio = 2){

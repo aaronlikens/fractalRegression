@@ -39,8 +39,11 @@ The output of the algorithm is a list that includes:
 }
 }
 \description{
-Fast function for computing multifractal detrended fluctuation analysis (MF-DFA), a widely used method for estimating the family of long-range temporal correlations or scaling exponents in time series data. 
-MF-DFA is also a form of multifractal analysis that indicates the degree of interaction across temporal scales.
+Fast function for computing multifractal detrended fluctuation analysis 
+(MF-DFA), a widely used method for estimating the family of long-range 
+temporal correlations or scaling exponents in time series data. 
+MF-DFA is also a form of multifractal analysis that indicates the degree 
+of interaction across temporal scales.
 }
 \details{
 Details of the algorithm are specified in detail in Kantelhardt et al. (2001; 2002) and visualized nicely in Kelty-Stephen et al. (2016).
