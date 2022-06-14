@@ -165,8 +165,12 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
                 
     }
     
-    return List::create(Named("scales") = scales, Named("betas") = betas,
-                        Named("r2") = r2, Named("t_observed") = t_observed);
+    return List::create(Named("x") = x,
+                        Named("y") = y,
+                        Named("scales") = scales, 
+                        Named("betas") = betas,
+                        Named("r2") = r2, 
+                        Named("t_observed") = t_observed);
 }
 
 

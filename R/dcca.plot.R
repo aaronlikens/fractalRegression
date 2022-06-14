@@ -32,8 +32,8 @@ dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL,
     }
     
     # compute surrogate time series for x and y
-    x.surr = iaafft(x, iterations)
-    y.surr = iaafft(y, iterations)
+    x.surr = iaafft(rhos$x, iterations)
+    y.surr = iaafft(rhos$y, iterations)
     ci.rhos = matrix(NA, nrow = iterations, ncol = length(rhos$rho))
     cis = matrix(NA, nrow = 2, ncol = length(rhos$scales))
     

@@ -139,7 +139,10 @@ List dcca(arma::vec x, arma::vec y, int order, arma::ivec scales){
                 
     }
     
-    return List::create(Named("scales") = scales, Named("rho") = rho);
+    return List::create(Named("x") = x,
+                        Named("y") = y,
+                        Named("scales") = scales,
+                        Named("rho") = rho);
 }
 
 

@@ -33,8 +33,8 @@ mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
     }
     
     # compute surrogate time series for x and y
-    x.surr = iaafft(x, iterations)
-    y.surr = iaafft(y, iterations)
+    x.surr = iaafft(betas$x, iterations)
+    y.surr = iaafft(betas$y, iterations)
     ci.betas = matrix(NA, nrow = iterations, ncol = length(betas$betas))
     cis = matrix(NA, nrow = 2, ncol = length(betas$scales))
     
