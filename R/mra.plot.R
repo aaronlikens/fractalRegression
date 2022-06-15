@@ -59,6 +59,11 @@ mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
     lines(betas$scales, cis[2,], col = 'red')
     legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
            col = c('black', 'red'))
+  }else{
+    ymin = min(betas$beta)
+    ymax = max(betas$beta)
+    plot(betas$scales, betas$betas, pch = 16, type = 'b', xlab = 's',
+         ylab = expression(beta(s)), ylim = c(ymin, ymax))
   }
   par(op)
   

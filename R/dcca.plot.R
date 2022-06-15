@@ -20,10 +20,18 @@
 #' @export
 dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL,
                      return.ci = FALSE){
+  # initialize y plot range to ensure visible in loop and control scopes
+  ymin = 0
+  ymax = 0
+  
+  # store default plot settings
   op = par(no.readonly = TRUE)
+  
+  #modify margines and text size
   par(mar = c(5,5,.5,1),
       cex.lab = 1.5,
       cex.axis = 1.5)
+  
   
   if (ci){
     if (is.null(iterations)) {
@@ -58,6 +66,11 @@ dcca.plot = function(rhos, order = 1, ci = FALSE, iterations = NULL,
     lines(rhos$scales, cis[2,], col = 'red')
     legend('topright',legend = c(expression(rho(s)),'Surrogate CI'), lty = 1,
            col = c('black', 'red'))
+  }else{
+    ymin = min(rhos$rho)
+    ymax = max(rhos$rho)
+    plot(rhos$scales, rhos$rho, pch = 16, type = 'b', xlab = 's',
+         ylab = expression(rho(s)), ylim = c(ymin, ymax))
   }
   par(op)
   if (return.ci){
