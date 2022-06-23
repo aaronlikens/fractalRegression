@@ -31,7 +31,7 @@ using namespace Rcpp;
 //' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 //' produce duplicate values after the necessary floor function.
 //' 
-//' @param scale_ratio A scaling factor by which successive window sizes were 
+//' @param scale_ratio A scaling factor by which successive window sizes  
 //' were created. The default is 2 but should be addressed according to how 
 //' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
 //' where 1.1 is the scale ratio.

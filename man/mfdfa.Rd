@@ -4,7 +4,7 @@
 \alias{mfdfa}
 \title{Multifractal Detrended Fluctuation Analysis}
 \usage{
-mfdfa(x, q, order, scales)
+mfdfa(x, q, order, scales, scale_ratio)
 }
 \arguments{
 \item{x}{A real valued vector (i.e., time series data) to be analyzed.}
@@ -26,12 +26,17 @@ time series. Other, logarithmic bases may also be used to give finer
 resolution of scales while maintaining ~= spacing in the log domain e.g, 
 \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 produce duplicate values after the necessary floor function.}
+
+\item{scale_ratio}{A scaling factor by which successive window sizes 
+were created. The default is 2 but should be addressed according to how 
+scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+where 1.1 is the scale ratio.}
 }
 \value{
 The output of the algorithm is a list that includes:
 \itemize{ 
- \item \code{log_scale} The log2 scales used for the analysis
- \item \code{log_fq} The log2 of the fluctuation functions for each scale and q 
+ \item \code{log_scale} The log scales used for the analysis
+ \item \code{log_fq} The log of the fluctuation functions for each scale and q 
  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
  \item \code{Tau} The q-order mass exponent
  \item \code{q} The q-order statistical moments

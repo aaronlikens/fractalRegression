@@ -4,7 +4,15 @@
 \alias{dcca.plot}
 \title{Detrended Cross Correlation Plot}
 \usage{
-dcca.plot(rhos, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+dcca.plot(
+  rhos,
+  order = 1,
+  ci = FALSE,
+  iterations = NULL,
+  return.ci = FALSE,
+  loess.rho = FALSE,
+  loess.ci = FALSE
+)
 }
 \arguments{
 \item{rhos}{an object containing  results from detrended cross correlation
@@ -27,6 +35,12 @@ produce better confidence interval estimates.}
 
 \item{return.ci}{logical indicating whether the confidence intervals 
 should be returned}
+
+\item{loess.rho}{logical indicating whether a loess fit should be used for 
+displaying multiscale regression coefficient trajectories}
+
+\item{loess.ci}{logical indicating whether a loess fit should be used to smooth 
+confidence intervals}
 }
 \description{
 A plotting method for constructing scalewise correlation plot

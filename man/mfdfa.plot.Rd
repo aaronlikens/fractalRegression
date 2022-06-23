@@ -4,11 +4,21 @@
 \alias{mfdfa.plot}
 \title{Multifractal Spectrum Plot}
 \usage{
-mfdfa.plot(mf)
+mfdfa.plot(mf, do.surrogate, nsurrogates = 19, return.ci = FALSE)
 }
 \arguments{
 \item{mf}{an object containing elements related to the mutlifractal 
 spectrum derived from Multifractal Detrended Fluctuation Analysis}
+
+\item{do.surrogate}{logical indicating whether surrogation should be 
+performed on the time series}
+
+\item{nsurrogates}{integer indicating the number of surrogates to be 
+constructed. Default is 19 for 95% confidence limit. Larger number of 
+surrogates ore more precise but increase computational time.}
+
+\item{return.ci}{logical indicating if confidence intervals derived from 
+surrogate analysis should be returned.}
 }
 \description{
 Method for plotting various forms of the multifractal spectrum

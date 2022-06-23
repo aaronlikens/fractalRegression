@@ -95,7 +95,7 @@ dcca <- function(x, y, order, scales) {
 #' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 #' produce duplicate values after the necessary floor function.
 #' 
-#' @param scale_ratio A scaling factor by which successive window sizes were 
+#' @param scale_ratio A scaling factor by which successive window sizes  
 #' were created. The default is 2 but should be addressed according to how 
 #' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
 #' where 1.1 is the scale ratio.
@@ -251,6 +251,11 @@ detrend_cov <- function(x, y, m) {
 #' resolution of scales while maintaining ~= spacing in the log domain e.g, 
 #' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 #' produce duplicate values after the necessary floor function.
+#' 
+#' @param scale_ratio A scaling factor by which successive window sizes 
+#' were created. The default is 2 but should be addressed according to how 
+#' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+#' where 1.1 is the scale ratio.
 #' @import Rcpp
 #' @useDynLib fractalRegression
 #' @export
@@ -270,8 +275,8 @@ detrend_cov <- function(x, y, m) {
 #'
 #' @return The output of the algorithm is a list that includes:
 #' \itemize{ 
-#'  \item \code{log_scale} The log2 scales used for the analysis
-#'  \item \code{log_fq} The log2 of the fluctuation functions for each scale and q 
+#'  \item \code{log_scale} The log scales used for the analysis
+#'  \item \code{log_fq} The log of the fluctuation functions for each scale and q 
 #'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
 #'  \item \code{Tau} The q-order mass exponent
 #'  \item \code{q} The q-order statistical moments
@@ -316,8 +321,8 @@ detrend_cov <- function(x, y, m) {
 #'
 #' 
 #' 
-mfdfa <- function(x, q, order, scales) {
-    .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scales)
+mfdfa <- function(x, q, order, scales, scale_ratio) {
+    .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scales, scale_ratio)
 }
 
 #' Multiscale Lagged Regression Analysis

@@ -17,9 +17,13 @@
 #' produce better confidence interval estimates.
 #' @param return.ci logical indicating whether the confidence intervals 
 #' should be returned
+#' @param loess.beta logical indicating whether a loess fit should be used for 
+#' displaying multiscale regression coefficient trajectories
+#' @param loess.ci logical indicating whether a loess fit should be used to smooth 
+#' confidence intervals
 #' @export
 mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
-                    return.ci = FALSE){
+                    return.ci = FALSE, loess.beta = FALSE, loess.ci = FALSE){
   op = par(no.readonly = TRUE)
   par(mar = c(5,5,.5,1),
       cex.lab = 1.5,
@@ -53,12 +57,42 @@ mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
     }
     ymin = min(min(ci.betas), min(betas$betas))
     ymax = max(max(ci.betas), max(betas$betas))
-    plot(betas$scales, betas$betas, pch = 16, type = 'b', xlab = 's',
-         ylab = expression(beta(s)), ylim = c(ymin, ymax))
-    lines(betas$scales, cis[1,], col = 'red')
-    lines(betas$scales, cis[2,], col = 'red')
-    legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
-           col = c('black', 'red'))
+    if (loess.ci & !loess.beta) {
+      loess.upper.ci = loess(cis[1,] ~ betas$scales)
+      loess.lower.ci = loess(cis[2,] ~ betas$scales)
+      plot(betas$scales, betas$betas, pch = 16, type = 'b', xlab = 's',
+           ylab = expression(beta(s)), ylim = c(ymin, ymax))
+      lines(betas$scales, predict(loess.upper.ci), col = 'red')
+      lines(betas$scales, predict(loess.lower.ci), col = 'red')
+      legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
+             col = c('black', 'red'))
+    }else if (!loess.ci & loess.beta){
+      loess.beta = loess(betas$beta ~ betas$scales)
+      plot(betas$scales, predict(loess.beta), pch = 16, type = 'b', xlab = 's',
+           ylab = expression(beta(s)), ylim = c(ymin, ymax))
+      lines(betas$scales, cis[1,], col = 'red')
+      lines(betas$scales, cis[2,], col = 'red')
+      legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
+             col = c('black', 'red'))
+    }else if(loess.ci & loess.beta){
+      loess.upper.ci = loess(cis[1,] ~ betas$scales)
+      loess.lower.ci = loess(cis[2,] ~ betas$scales)
+      loess.beta = loess(betas$beta ~ betas$scales)
+      plot(betas$scales, predict(loess.beta), pch = 16, type = 'b', xlab = 's',
+           ylab = expression(beta(s)), ylim = c(ymin, ymax))
+      lines(betas$scales, predict(loess.upper.ci), col = 'red')
+      lines(betas$scales, predict(loess.lower.ci), col = 'red')
+      legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
+             col = c('black', 'red'))
+    }else{
+      plot(betas$scales, betas$betas, pch = 16, type = 'b', xlab = 's',
+           ylab = expression(beta(s)), ylim = c(ymin, ymax))
+      lines(betas$scales, cis[1,], col = 'red')
+      lines(betas$scales, cis[2,], col = 'red')
+      legend('topright',legend = c(expression(beta(s)),'Surrogate CI'), lty = 1,
+             col = c('black', 'red'))
+    }
+    
   }else{
     ymin = min(betas$beta)
     ymax = max(betas$beta)

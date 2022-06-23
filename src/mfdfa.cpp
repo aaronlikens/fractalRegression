@@ -28,6 +28,11 @@ using namespace Rcpp;
 //' resolution of scales while maintaining ~= spacing in the log domain e.g, 
 //' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 //' produce duplicate values after the necessary floor function.
+//' 
+//' @param scale_ratio A scaling factor by which successive window sizes 
+//' were created. The default is 2 but should be addressed according to how 
+//' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
+//' where 1.1 is the scale ratio.
 //' @import Rcpp
 //' @useDynLib fractalRegression
 //' @export
@@ -47,8 +52,8 @@ using namespace Rcpp;
 //'
 //' @return The output of the algorithm is a list that includes:
 //' \itemize{ 
-//'  \item \code{log_scale} The log2 scales used for the analysis
-//'  \item \code{log_fq} The log2 of the fluctuation functions for each scale and q 
+//'  \item \code{log_scale} The log scales used for the analysis
+//'  \item \code{log_fq} The log of the fluctuation functions for each scale and q 
 //'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
 //'  \item \code{Tau} The q-order mass exponent
 //'  \item \code{q} The q-order statistical moments
@@ -94,7 +99,8 @@ using namespace Rcpp;
 //' 
 //' 
 // [[Rcpp::export]]
-List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
+List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales,
+           int scale_ratio){
     try{
         double len = x.size();  // get size of time series
         unsigned int numberOfScales = scales.n_elem;//determine how many scales to use
@@ -145,7 +151,8 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
             
             for (unsigned int nq = 0; nq < qlength; ++nq){
                 fq.row(ns) = arma::pow(qRMS.row(ns),(1/q[nq]));
-                log_fq(ns,nq) = log2(fq(ns,nq));
+                // log_fq(ns,nq) = log2(fq(ns,nq));
+                log_fq(ns,nq) = log(fq(ns,nq))/log(scale_ratio);
 
             }
             // TODO: address issue where q does not contain negative values
@@ -156,10 +163,11 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         }
         
         
-        //take the log2 of scales
+        //take the log of scales
         arma::vec log_scale(numberOfScales);
         for ( unsigned int i = 0; i < numberOfScales; ++i ){
-            log_scale(i) = log2(scales(i));
+            // log_scale(i) = log2(scales(i));
+            log_scale(i) = log(scales(i))/log(scale_ratio);
         }
         
         //compute various fractal scaling exponents (tau, h, Dh)
@@ -184,9 +192,17 @@ List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales){
         
         arma::vec h = hh;
         
-        return List::create(Named("log_scale") = log_scale, Named("log_fq")=log_fq, Named("Hq") = Hq,
-        Named("Tau") = tau, Named("q") = q, Named("h")= h,
-        Named("Dh")=Dh);
+        return List::create(Named("x") = x,
+                            Named("order") = order,
+                            Named("q") = q,
+                            Named("scales") = scales,
+                            Named("scale_ratio") = scale_ratio,
+                            Named("log_scale") = log_scale, 
+                            Named("log_fq")=log_fq, 
+                            Named("Hq") = Hq,
+                            Named("Tau") = tau,
+                            Named("h") = h,
+                            Named("Dh")=Dh);
         
     } catch( std::exception &ex ) {    	// or use END_RCPP macro
     forward_exception_to_r( ex );
