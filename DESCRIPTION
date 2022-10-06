@@ -21,6 +21,6 @@ Encoding: UTF-8
 Imports: Rcpp (>= 1.0.0), colorRamps
 LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 NeedsCompilation: yes
 Packaged: 2021-11-04 16:05:33 UTC; aaronlikens

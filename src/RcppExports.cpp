@@ -92,6 +92,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// seq_int_range
+arma::uvec seq_int_range(arma::uword start, arma::uword stop);
+RcppExport SEXP _fractalRegression_seq_int_range(SEXP startSEXP, SEXP stopSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type start(startSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type stop(stopSEXP);
+    rcpp_result_gen = Rcpp::wrap(seq_int_range(start, stop));
+    return rcpp_result_gen;
+END_RCPP
+}
 // detrend_cov
 arma::vec detrend_cov(arma::vec x, arma::vec y, int m);
 RcppExport SEXP _fractalRegression_detrend_cov(SEXP xSEXP, SEXP ySEXP, SEXP mSEXP) {
@@ -106,7 +118,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // mfdfa
-List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales, int scale_ratio);
+List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales, double scale_ratio);
 RcppExport SEXP _fractalRegression_mfdfa(SEXP xSEXP, SEXP qSEXP, SEXP orderSEXP, SEXP scalesSEXP, SEXP scale_ratioSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -115,8 +127,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type q(qSEXP);
     Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< arma::uvec >::type scales(scalesSEXP);
-    Rcpp::traits::input_parameter< int >::type scale_ratio(scale_ratioSEXP);
+    Rcpp::traits::input_parameter< double >::type scale_ratio(scale_ratioSEXP);
     rcpp_result_gen = Rcpp::wrap(mfdfa(x, q, order, scales, scale_ratio));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mfdirect
+List mfdirect(arma::vec x, int order, arma::uvec scales);
+RcppExport SEXP _fractalRegression_mfdirect(SEXP xSEXP, SEXP orderSEXP, SEXP scalesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type scales(scalesSEXP);
+    rcpp_result_gen = Rcpp::wrap(mfdirect(x, order, scales));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -194,8 +219,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fractalRegression_poly_residuals", (DL_FUNC) &_fractalRegression_poly_residuals, 2},
     {"_fractalRegression_lm_c", (DL_FUNC) &_fractalRegression_lm_c, 2},
     {"_fractalRegression_seq_int", (DL_FUNC) &_fractalRegression_seq_int, 1},
+    {"_fractalRegression_seq_int_range", (DL_FUNC) &_fractalRegression_seq_int_range, 2},
     {"_fractalRegression_detrend_cov", (DL_FUNC) &_fractalRegression_detrend_cov, 3},
     {"_fractalRegression_mfdfa", (DL_FUNC) &_fractalRegression_mfdfa, 5},
+    {"_fractalRegression_mfdirect", (DL_FUNC) &_fractalRegression_mfdirect, 3},
     {"_fractalRegression_mlra", (DL_FUNC) &_fractalRegression_mlra, 6},
     {"_fractalRegression_lagn", (DL_FUNC) &_fractalRegression_lagn, 2},
     {"_fractalRegression_polyfit", (DL_FUNC) &_fractalRegression_polyfit, 2},

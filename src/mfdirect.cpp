@@ -1,10 +1,9 @@
-// [[Rcpp::depends(RcppArmadillo)]]
+//[[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include "lmc.h"
 using namespace Rcpp;
 
-
-//' Multifractal Detrended Fluctuation Analysis
+//' Multifractal Detrended Fluctuation Analysis 2
 //'
 //' Fast function for computing multifractal detrended fluctuation analysis 
 //' (MF-DFA), a widely used method for estimating the family of long-range 
@@ -13,9 +12,6 @@ using namespace Rcpp;
 //' of interaction across temporal scales.
 //' 
 //' @param x A real valued vector (i.e., time series data) to be analyzed. 
-//' @param q A real valued vector indicating the statistical moments (q) to use 
-//' in the analysis. q must span negative and positive values e.g., -3:3, 
-//' otherwise and error may be produced. 
 //' @param order is an integer indicating the polynomial order used for 
 //' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
 //' is not pre-determined limit on the order of the polynomial order but the 
@@ -28,11 +24,6 @@ using namespace Rcpp;
 //' resolution of scales while maintaining ~= spacing in the log domain e.g, 
 //' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
 //' produce duplicate values after the necessary floor function.
-//' 
-//' @param scale_ratio A scaling factor by which successive window sizes 
-//' were created. The default is 2 but should be addressed according to how 
-//' scales were generated for example using \code{logscale(16, 100, 1.1)}, 
-//' where 1.1 is the scale ratio.
 //' @import Rcpp
 //' @useDynLib fractalRegression
 //' @export
@@ -99,117 +90,129 @@ using namespace Rcpp;
 //' 
 //' 
 // [[Rcpp::export]]
-List mfdfa(arma::vec x, arma::vec q, int order, arma::uvec scales,
-           double scale_ratio){
-    try{
-        double len = x.size();  // get size of time series
-        unsigned int numberOfScales = scales.n_elem;//determine how many scales to use
-        arma::vec X = cumsum(x-mean(x));  //take the cumulative sum of the data
-        
-        //create vectors of scales and q values
-        unsigned int qlength = q.n_elem;
-        arma::uvec q0indx = arma::find(abs(q) <= 1e-8, 1); // may be incompatible
-        bool q_contains_zero = arma::numel(q0indx) > 0;
-        
-        if (q_contains_zero) {
-          q(q0indx(0)) = 0.0;  
-        }
-        
-        
-        //do the detrending and return the RMSE for each of the ith scales
-        arma::mat fq(numberOfScales,qlength);
-        arma::mat log_fq(numberOfScales,qlength);
-        arma::mat qRMS(numberOfScales, qlength);
-        
-        for (unsigned int ns = 0; ns < numberOfScales; ++ns ){
-            unsigned int window = scales(ns);
-            arma::uvec indx(window);
-            for (unsigned int j = 0; j < window; ++j){
-                indx(j) = j;
-            }
-            unsigned int numberOfBlocks = floor(len/window);
-            arma::vec rms(numberOfBlocks);
-            arma::mat qrms(numberOfBlocks,qlength);
-            arma::vec resid(indx.n_elem); 
-            arma::vec resid_sq(indx.n_elem); 
-           
-            for (unsigned int v = 0; v < numberOfBlocks; ++v ){
-              
-                arma::vec temp = X.rows(indx); 
-                resid = poly_residuals(temp,order);
-                resid_sq = arma::pow(resid,2);
-                rms[v] = arma::mean(resid_sq);
-                rms[v] = sqrt(rms[v]);
-                indx = indx + window;
-                for (unsigned int nq = 0; nq < qlength; ++nq ){
-                    qrms(v,nq) = pow(rms(v),q(nq));
-                }
-                
-            }
-            
-            qRMS.row(ns) = mean(qrms,0); //compute the q-order statistics
-            
-            for (unsigned int nq = 0; nq < qlength; ++nq){
-                fq.row(ns) = arma::pow(qRMS.row(ns),(1/q[nq]));
-                // log_fq(ns,nq) = log2(fq(ns,nq));
-                log_fq(ns,nq) = log(fq(ns,nq))/log(scale_ratio);
+List mfdirect(arma::vec x, int order, arma::uvec scales) {
 
-            }
-            // TODO: address issue where q does not contain negative values
-            if (q_contains_zero){
-              log_fq(ns, q0indx(0)) = (log_fq(ns, q0indx(0)-1) + log_fq(ns, q0indx(0)+1))/2;  
-            }
-            
-        }
-        
-        
-        //take the log of scales
-        arma::vec log_scale(numberOfScales);
-        for ( unsigned int i = 0; i < numberOfScales; ++i ){
-            // log_scale(i) = log2(scales(i));
-            log_scale(i) = log(scales(i))/log(scale_ratio);
-        }
-        
-        //compute various fractal scaling exponents (tau, h, Dh)
-        arma::vec Hq(q.n_elem);
-        for ( unsigned int nq = 0; nq < q.n_elem; ++nq ){
-            arma::vec temp = log_fq.col(nq);
-            arma::vec p = lm_c(log_scale,temp);
-            Hq(nq)=p(1);
-        }
-
-        
-        arma::vec tau(Hq.n_elem);
-        tau = Hq%q-1;
-        arma::vec tau_diff = arma::diff(tau);
-        double q_increment = q(1) - q(0);
-        arma::vec hh = tau_diff/q_increment; 
-        arma::vec Dh(q.n_elem-1);
-        
-        for (unsigned int i = 0; i < q.n_elem-1; ++i ){
-            Dh(i) = q(i)*hh(i)-tau(i);
-        }
-        
-        arma::vec h = hh;
-        
-        return List::create(Named("x") = x,
-                            Named("order") = order,
-                            Named("q") = q,
-                            Named("scales") = scales,
-                            Named("scale_ratio") = scale_ratio,
-                            Named("log_scale") = log_scale, 
-                            Named("log_fq")=log_fq, 
-                            Named("Hq") = Hq,
-                            Named("Tau") = tau,
-                            Named("h") = h,
-                            Named("Dh")=Dh);
-        
-    } catch( std::exception &ex ) {    	// or use END_RCPP macro
-    forward_exception_to_r( ex );
-    } catch(...) {
-        ::Rf_error( "c++ exception (unknown reason)" );
+  arma::vec Fq0(scales.n_elem, arma::fill::zeros);
+  for (arma::uword i = 0; i < scales.n_elem; i++){
+    arma::uword nbins = floor(x.n_elem/scales(i) );
+    arma::vec rms0(nbins, arma::fill::zeros);
+    arma::uvec indx = seq_int_range(0, scales(i) - 1);
+    
+    for (arma::uword j = 0; j <  nbins; j++ ){
+      arma::vec temp = x.rows(indx);
+      arma::vec res = poly_residuals(temp, order);
+      res = pow(res,2);
+      rms0(j) = sqrt(mean(res));
+      indx = indx + scales(i);
     }
-    return R_NilValue; // -Wall
+    rms0 = pow(rms0,2);
+    Fq0(i) = exp(0.5*mean(log(rms0)));
+  }
+  
+  
+  arma::uword halfmax = floor((double)max(scales)/2);
+  arma::uvec time_index = seq_int_range(halfmax - 1, x.n_elem - halfmax - 1);
+
+
+  arma::vec F(scales.n_elem);
+  arma::field<arma::vec> RMS(scales.n_elem, 1);
+  for (arma::uword i = 0; i < scales.n_elem; i++){
+    
+    arma::uword halfseg = floor((double)scales(i)/2);
+    arma::uword nbins = x.n_elem - 2*halfmax - 1;
+    arma::vec rms(nbins + 1);
+    arma::uword counter = 0;
+    for (arma::uword j = halfmax - 1; j < x.n_elem - halfmax - 1; j ++){  
+      // Rcout << "Outer Loop " << i << " out of " << scales.n_elem << "\n";
+      // Rcout << "halfseg is " << halfseg << "\n";
+      // Rcout << "Inner Loop " << j << " out of " << nbins << "\n";
+      arma::uvec indx = seq_int_range(j - halfseg - 1, j + halfseg - 1);
+      // Rcout << "First and Last indices are " << indx(0) << " and " <<
+      //   indx(indx.n_elem-1) << ". x has " << x.n_rows << "rows.\n";
+      arma::vec temp = x.rows(indx);
+      // Rcout << "I indexed the rows.\n";
+      arma::vec res = poly_residuals(temp, order);
+      // Rcout << "I did the regression.\n";
+      res = pow(res,2);
+      // Rcout << "j is " << j << " and rms has " << rms.n_elem << "rows.\n";
+      rms(counter) = sqrt(mean(res));
+      counter += 1;
+      // Rcout << "I wrote to the rms variable.\n";
+      
+    }
+    RMS(i) = rms;
+    rms = pow(rms,2);
+    F(i) = exp(0.5*mean(log(rms)));
+  }
+  // Rcout << "Madw it thorugh the second loop \n";
+  arma::vec logs = arma::log2(arma::conv_to<arma::vec>::from(scales));
+  arma::vec logfq0 = log2(Fq0);
+  arma::vec C = lm_c(logs, logfq0);
+  
+  // create augmented matrix
+  arma::mat aug_logs(logs.n_elem, 2, arma::fill::ones);
+  aug_logs.col(1) = logs;
+  
+  // get predicted values
+  arma::vec regfit =  aug_logs*C;
+  
+  double Hq0=C(1);
+  arma::uword maxL = time_index(time_index.n_elem-1);
+  arma::mat Ht(time_index.n_elem - 1, scales.n_elem);
+  // Rcout << "about to enter the loop\n";
+  for (arma::uword i = 0; i < scales.n_elem; ++i){
+    // Rcout << "Loop " << i << " out of " << scales.n_elem << "\n";
+    // Rcout << "First and Last indices are " << time_index(0) << " and " <<
+    //   time_index(time_index.n_elem-1) << ".\n";
+    // Rcout << "RMS has " << RMS(i).n_rows << " rows.\n";
+    arma::vec rmst = RMS(i);
+    // arma::vec rmst = RMS(i).rows(time_index);
+    Rcout << "got the RMS\n";
+    arma::vec resrms = regfit(i) - log2(rmst);
+    double logscale = log2(maxL) - log2(scales(i));
+    // Rcout << "Is Ht the problem?" << "\n";
+    Ht.col(i) = (resrms/logscale) + Hq0;
+    // Rcout << "maybe not\n";
+  }
+  // Rcout << "Made it thorugh the third loop \n";
+  //NOTE: should this be a floor?
+  Rcout << "1Here.\n";
+  double bin_numb = round(sqrt(Ht.n_elem));
+  Rcout << "2Here.\n";
+  // Ht.resize(Ht.n_elem);
+  Rcout << "3Here.\n";
+  double range_Ht = Ht.max() - Ht.min();
+  Rcout << "4Here.\n";
+  double binsize = Ht.n_elem/range_Ht;
+  Rcout << "5Here.\n";
+  arma::vec Htbin(bin_numb, arma::fill::zeros);
+  Rcout << "6Here.\n";
+  Htbin(0) = Ht.min();
+  Rcout << "7Here.\n";
+  for (arma::uword i = 1; i < Htbin.n_elem; ++i){
+    Htbin(i) = Htbin(i - 1) + binsize;
+  }
+  Rcout << "8Here.\n";
+  arma::vec Htrow = Ht;
+  Htrow.resize(Htrow.n_elem);
+  arma::uvec freq = hist(Htrow, Htbin);
+  
+  
+  Rcout << "9Here.\n";
+  arma::vec Ph = arma::conv_to<arma::vec>::from(freq)/sum(freq);
+  Rcout << "10Here.\n";
+  arma::vec Ph_norm = Ph/max(Ph);
+  Rcout << "11Here.\n";
+  arma::vec Dh = 1- (log(Ph_norm))/log(mean(diff(Htbin)));
+  Rcout << "12Here.\n";
+  
+  return List::create(Named("x") = x,
+                      Named("scales") = scales,
+                      Named("Ht") = Ht,
+                      Named("htbin") = Htbin,
+                      Named("Ph") = Ph,
+                      Named("Ph_norm") = Ph_norm,
+                      Named("Dh") = Dh);
 }
 
-//written by Aaron Likens (2022)
+
