@@ -335,6 +335,18 @@ mfdfa <- function(x, q, order, scales, scale_ratio) {
     .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scales, scale_ratio)
 }
 
+mfdfa_cj <- function(Timeseries, qValues, scales) {
+    .Call('_fractalRegression_mfdfa_cj', PACKAGE = 'fractalRegression', Timeseries, qValues, scales)
+}
+
+win_sums <- function(x, window) {
+    .Call('_fractalRegression_win_sums', PACKAGE = 'fractalRegression', x, window)
+}
+
+fitting <- function(x, y) {
+    .Call('_fractalRegression_fitting', PACKAGE = 'fractalRegression', x, y)
+}
+
 #' Multifractal Detrended Fluctuation Analysis 2
 #'
 #' Fast function for computing multifractal detrended fluctuation analysis 

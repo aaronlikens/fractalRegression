@@ -132,6 +132,43 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mfdfa_cj
+List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales);
+RcppExport SEXP _fractalRegression_mfdfa_cj(SEXP TimeseriesSEXP, SEXP qValuesSEXP, SEXP scalesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type Timeseries(TimeseriesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type qValues(qValuesSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type scales(scalesSEXP);
+    rcpp_result_gen = Rcpp::wrap(mfdfa_cj(Timeseries, qValues, scales));
+    return rcpp_result_gen;
+END_RCPP
+}
+// win_sums
+arma::vec win_sums(arma::vec x, uint window);
+RcppExport SEXP _fractalRegression_win_sums(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< uint >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(win_sums(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fitting
+arma::vec fitting(arma::vec x, arma::vec y);
+RcppExport SEXP _fractalRegression_fitting(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(fitting(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mfdirect
 List mfdirect(arma::vec x, int order, arma::uvec scales);
 RcppExport SEXP _fractalRegression_mfdirect(SEXP xSEXP, SEXP orderSEXP, SEXP scalesSEXP) {
@@ -222,6 +259,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fractalRegression_seq_int_range", (DL_FUNC) &_fractalRegression_seq_int_range, 2},
     {"_fractalRegression_detrend_cov", (DL_FUNC) &_fractalRegression_detrend_cov, 3},
     {"_fractalRegression_mfdfa", (DL_FUNC) &_fractalRegression_mfdfa, 5},
+    {"_fractalRegression_mfdfa_cj", (DL_FUNC) &_fractalRegression_mfdfa_cj, 3},
+    {"_fractalRegression_win_sums", (DL_FUNC) &_fractalRegression_win_sums, 2},
+    {"_fractalRegression_fitting", (DL_FUNC) &_fractalRegression_fitting, 2},
     {"_fractalRegression_mfdirect", (DL_FUNC) &_fractalRegression_mfdirect, 3},
     {"_fractalRegression_mlra", (DL_FUNC) &_fractalRegression_mlra, 6},
     {"_fractalRegression_lagn", (DL_FUNC) &_fractalRegression_lagn, 2},
