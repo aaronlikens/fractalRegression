@@ -15,6 +15,10 @@ installed using R devtools. This is a source package and requires
 compilation of C++ code. Windows users can install RTools software
 package to get necessary components:
 <https://cran.r-project.org/bin/windows/Rtools/>
+Intel Mac users can install xcode along with the xcode commandline tools. 
+Users with Mac silicon will need to a bit more fiddling to get the build
+chain working including the R recommended gfortran compiler. Some useful
+tips can be found here: https://mac.r-project.org/.
 
 ``` r
 devtools::install_github("aaronlikens/fractalRegression")
