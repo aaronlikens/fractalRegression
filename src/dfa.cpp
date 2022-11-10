@@ -38,9 +38,11 @@ using namespace Rcpp;
 //' 
 //' @import Rcpp
 //' @useDynLib fractalRegression
-//' 
-//' @details Details of the algorithm are specified in detail in Peng et al. (1994) and visualized nicely in Kelty-Stephen et al. (2016).
-//' The output of the algorithm is an \eqn{\alpha} (alpha) estimate which is a generalization of the Hurst Exponent. Conventional interpretation of \eqn{\alpha} is:
+//' @export
+//' @details Details of the algorithm are specified in detail in Peng et al. 
+//' (1994) and visualized nicely in Kelty-Stephen et al. (2016). The output of 
+//' the algorithm is an \eqn{\alpha} (alpha) estimate which is a generalization
+//'  of the Hurst Exponent. Conventional interpretation of \eqn{\alpha} is:
 //' \itemize{
 //'  \item \eqn{\alpha < 0.5 =} anti-correlated
 //'  \item \eqn{\alpha ~= 0.5 =} uncorrelated, white noise
@@ -50,10 +52,13 @@ using namespace Rcpp;
 //'  \item \eqn{\alpha ~= 1.5 =} fractional brownian motion
 //' } 
 //' 
-//' We recommend a few points of consideration here in using this function. One is to be sure to 
-//' verify there are not cross-over points in the logScale-logFluctuation plots (Peng et al., 1995; Perakakis et al ., 2009). Cross-over points 
-//' (or a visible change in the slope as a function of of scale) indicate that a mono-fractal characterization 
-//' does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the mfdfa() to estimate the multi-fractal
+//' We recommend a few points of consideration here in using this function. 
+//' One is to be sure to verify there are not cross-over points in the logScale-
+//' logFluctuation plots (Peng et al., 1995; Perakakis et al ., 2009). Cross-
+//' over points (or a visible change in the slope as a function of of scale)
+//' indicate that a mono-fractal characterization does not sufficiently 
+//' characterize the data. If cross-over points are evident, we recommend 
+//' proceeding to using the mfdfa() to estimate the multi-fractal
 //' fluctuation dynamics across scales.
 //' 
 //' While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine
@@ -85,13 +90,10 @@ using namespace Rcpp;
 //' Perakakis, P., Taylor, M., Martinez-Nieto, E., Revithi, I., & Vila, J. (2009). Breathing frequency bias in fractal analysis of heart rate variability. Biological psychology, 82(1), 82-88.
 //' 
 //' @examples
-//' 
-//' 
-//' 
 //' noise <- rnorm(5000)
 //'
 //' scales <- c(16,32,64,128,256,512,1024)
-//
+//'
 //' dfa.noise.out <- dfa(
 //'     x = noise, 
 //'     order = 1, 
@@ -116,11 +118,7 @@ using namespace Rcpp;
 //'     verbose = 1, 
 //'     scales = scales, 
 //'     scale_ratio = 2)
-//'   
-//' 
-//' 
-//' 
-//' @export
+//'     
 // [[Rcpp::export]]
 List dfa(arma::vec x, int order, arma::uword verbose, 
              arma::uvec scales, double scale_ratio = 2){

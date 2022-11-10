@@ -58,7 +58,7 @@ noise <- rnorm(5000)
 
 pink.noise <- fgn_sim(n = 5000, H = 0.9)
 
-scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1250, scale_ratio = 1.1)
 
 dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 

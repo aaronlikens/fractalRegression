@@ -42,7 +42,19 @@ memory.}
 \item{d4}{is a numeric fractional difference parameter for y specifying long term 
 memory.}
 
-\item{theta2}{}
+\item{alpha}{see Kristoufek (2013) for details.}
+
+\item{beta}{see Kristoufek (2013) for details.}
+
+\item{delta}{see Kristoufek (2013) for details.}
+
+\item{gamma}{see Kristoufek (2013) for details.}
+
+\item{theta}{see Kristoufek (2013) for details.}
+
+\item{theta1}{see Kristoufek (2013) for details.}
+
+\item{theta2}{see Kristoufek (2013) for details.}
 }
 \value{
 The object returned is a matrix of length n with a time series (x,y)
