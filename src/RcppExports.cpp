@@ -146,13 +146,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // win_sums
-arma::vec win_sums(arma::vec x, uint window);
+arma::vec win_sums(arma::vec x, unsigned int window);
 RcppExport SEXP _fractalRegression_win_sums(SEXP xSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< uint >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type window(windowSEXP);
     rcpp_result_gen = Rcpp::wrap(win_sums(x, window));
     return rcpp_result_gen;
 END_RCPP
