@@ -22,6 +22,6 @@ A vector of of logarithmically spaced scales.
 Create logarithmically spaced scales
 }
 \examples{
-scales <- logspace(scale_min = 16, scale_max = 1024, scale_ratio = 2)
+scales <- logscale(scale_min = 16, scale_max = 1024, scale_ratio = 2)
 
 }
