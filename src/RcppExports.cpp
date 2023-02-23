@@ -169,19 +169,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// mfdirect
-List mfdirect(arma::vec x, int order, arma::uvec scales);
-RcppExport SEXP _fractalRegression_mfdirect(SEXP xSEXP, SEXP orderSEXP, SEXP scalesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type scales(scalesSEXP);
-    rcpp_result_gen = Rcpp::wrap(mfdirect(x, order, scales));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mlra
 List mlra(arma::vec x, arma::vec y, int order, IntegerVector scales, int lags, char direction);
 RcppExport SEXP _fractalRegression_mlra(SEXP xSEXP, SEXP ySEXP, SEXP orderSEXP, SEXP scalesSEXP, SEXP lagsSEXP, SEXP directionSEXP) {
@@ -262,7 +249,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fractalRegression_mfdfa_cj", (DL_FUNC) &_fractalRegression_mfdfa_cj, 3},
     {"_fractalRegression_win_sums", (DL_FUNC) &_fractalRegression_win_sums, 2},
     {"_fractalRegression_fitting", (DL_FUNC) &_fractalRegression_fitting, 2},
-    {"_fractalRegression_mfdirect", (DL_FUNC) &_fractalRegression_mfdirect, 3},
     {"_fractalRegression_mlra", (DL_FUNC) &_fractalRegression_mlra, 6},
     {"_fractalRegression_lagn", (DL_FUNC) &_fractalRegression_lagn, 2},
     {"_fractalRegression_polyfit", (DL_FUNC) &_fractalRegression_polyfit, 2},

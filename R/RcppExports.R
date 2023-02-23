@@ -335,6 +335,18 @@ mfdfa <- function(x, q, order, scales, scale_ratio) {
     .Call('_fractalRegression_mfdfa', PACKAGE = 'fractalRegression', x, q, order, scales, scale_ratio)
 }
 
+#' Multifractal Analysis Chhabra-Jensen Method
+#'
+#' Fast function for computing multifractal analysis using a lesser-known method
+#' for estimating the family of long-range temporal correlations or scaling 
+#' exponents in time series data. This is also a form of multifractal 
+#' analysis that indicates the degree of interaction across temporal scales.
+#' @param Timeseries is a real valued time series
+#' @param qValues real valued vector of q-orders
+#' @param scales unsigned integer vector of scales to be resolved
+#' @export
+NULL
+
 mfdfa_cj <- function(Timeseries, qValues, scales) {
     .Call('_fractalRegression_mfdfa_cj', PACKAGE = 'fractalRegression', Timeseries, qValues, scales)
 }
@@ -347,160 +359,9 @@ fitting <- function(x, y) {
     .Call('_fractalRegression_fitting', PACKAGE = 'fractalRegression', x, y)
 }
 
-#' Multifractal Detrended Fluctuation Analysis 2
-#'
-#' Fast function for computing multifractal detrended fluctuation analysis 
-#' (MF-DFA), a widely used method for estimating the family of long-range 
-#' temporal correlations or scaling exponents in time series data. 
-#' MF-DFA is also a form of multifractal analysis that indicates the degree 
-#' of interaction across temporal scales.
-#' 
-#' @param x A real valued vector (i.e., time series data) to be analyzed. 
-#' @param order is an integer indicating the polynomial order used for 
-#' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
-#' is not pre-determined limit on the order of the polynomial order but the 
-#' user should avoid using a large polynomial on small windows. This can result
-#' in overfitting and non-meaningful estimates. 
-#' @param scales An integer valued vector indicating the scales one wishes to resolve
-#' in the analysis. Best practice is to use scales which are evenly spaced in 
-#' the logarithmic domain e.g., \code{scales = 2^(4:(N/4))}, where N is the length of the
-#' time series. Other, logarithmic bases may also be used to give finer 
-#' resolution of scales while maintaining ~= spacing in the log domain e.g, 
-#' \code{scales = unique(floor(1.1^(30:(N/4))))}. Note that fractional bases may 
-#' produce duplicate values after the necessary floor function.
-#' @import Rcpp
-#' @useDynLib fractalRegression
-#' @export
-#' 
-#' @details Details of the algorithm are specified in detail in Kantelhardt et al. (2001; 2002) and visualized nicely in Kelty-Stephen et al. (2016).
-#' 
-#' Selecting the range of values for q is important. Note that MF-DFA estimates for q = 2 are equivalent to DFA. Larger values of q (q > 2) emphasize larger residuals and smaller values of q
-#' (q < 2) emphasis smaller residuals (Kelty-Stephen et al., 2016). For most biomedical signals such as physiological and kinematic, a q range of -5 to 5 is common (Ihlen, 2010). However, in some cases, 
-#' such as when time series are short (< 3000), it can be appropriate to limit the range of q to positive only. Kelty-Stephen et al. (2016) recommend a 
-#' positive q range of 0.5 to 10 with an increment of 0.5. 
-#'
-#' While it is common to use only linear detrending with DFA and MF-DFA, it is important to inspect the trends in the data to determine
-#' if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA and MF-DFA output for different polynomial orders (see Ihlen, 2012; Kantelhardt et al., 2001).
-#' 
-#' General recommendations for choosing the min and max scale are a scale_min = 10 and scale_max = (N/4), where N is the number of observations.
-#' See Eke et al. (2002), Gulich and Zunino (2014), Ihlen (2012), and  for additional considerations and information on choosing the correct parameters. 
-#'
-#' @return The output of the algorithm is a list that includes:
-#' \itemize{ 
-#'  \item \code{log_scale} The log scales used for the analysis
-#'  \item \code{log_fq} The log of the fluctuation functions for each scale and q 
-#'  \item \code{Hq} The q-order Hurst exponent (generalized Hurst exponent)
-#'  \item \code{Tau} The q-order mass exponent
-#'  \item \code{q} The q-order statistical moments
-#'  \item \code{h} The q-order singularity exponent
-#'  \item \code{Dh} The dimension of the q-order singularity exponent
-#'}
-#'
-#' @references 
-#'
-#' Ihlen, E. A. F. (2012). Introduction to Multifractal Detrended Fluctuation Analysis in Matlab. Frontiers in Physiology, 3. https://doi.org/10.3389/fphys.2012.00141
-#'
-#' Kantelhardt, J. W., Koscielny-Bunde, E., Rego, H. H., Havlin, S., & Bunde, A. (2001). Detecting long-range correlations with detrended fluctuation analysis. Physica A: Statistical Mechanics and its Applications, 295(3-4), 441-454.
-#' 
-#' Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E., Havlin, S., Bunde, A., & Stanley, H. E. (2002). Multifractal detrended fluctuation analysis of nonstationary time series. Physica A: Statistical Mechanics and its Applications, 316(1-4), 87-114.
-#'
-#' Kelty-Stephen, D. G., Palatinus, K., Saltzman, E., & Dixon, J. A. (2013). A Tutorial on Multifractality, Cascades, and Interactivity for Empirical Time Series in Ecological Science. Ecological Psychology, 25(1), 1-62. https://doi.org/10.1080/10407413.2013.753804
-#'
-#' Kelty-Stephen, D. G., Stirling, L. A., & Lipsitz, L. A. (2016). Multifractal temporal correlations in circle-tracing behaviors are associated with the executive function of rule-switching assessed by the Trail Making Test. Psychological Assessment, 28(2), 171-180. https://doi.org/10.1037/pas0000177
-#'
-#' @examples
-#'
-#' 
-#' 
-#' noise <- rnorm(5000)
-#' 
-#' scales <- c(16,32,64,128,256,512,1024)
-#'
-#' mf.dfa.white.out <- mfdfa(
-#'     x = noise, q = c(-5:5), 
-#'     order = 1, 
-#'     scales = scales, 
-#'     scale_ratio = 2) 
-#'  
-#' pink.noise <- fgn_sim(n = 5000, H = 0.9)
-#' 
-#' mf.dfa.pink.out <- mfdfa(
-#'     x = pink.noise, 
-#'     q = c(-5:5), 
-#'     order = 1, 
-#'     scales = scales, 
-#'     scale_ratio = 2)
-#'
-#' 
-#' 
-mfdirect <- function(x, order, scales) {
-    .Call('_fractalRegression_mfdirect', PACKAGE = 'fractalRegression', x, order, scales)
-}
-
 #' Multiscale Lagged Regression Analysis
-#'
-#' Fast function for computing multiscale lagged regression analysis (MLRA) on long time series. Combining DFA with ordinary least square regression, MLRA
-#' is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables at different time-scales and temporal lags. 
-#'
-#' @param x A real valued vector (i.e., time series data) to be analyzed.
-#' @param y A real valued vector (i.e., time series data) to be analyzed.
-#' @param order is an integer indicating the polynomial order used for 
-#' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
-#' is a not pre-determined limit on the order of the polynomial order but the 
-#' user should avoid using a large polynomial on small windows. This can result
-#' in overfitting and non-meaningful estimates. 
-#' @param scales An integer vector of scales over which to compute correlation. 
-#' Unlike univariate DFA, MRA does not require that scales be in log units.
-#' Scale intervals can be sequential, for example, when the analysis is 
-#' exploratory and no a priori hypotheses have been made about the scale of 
-#' correlation. A small subset of targeted scales may also be investigated 
-#' where scale-specific research questions exist. We have found that windows
-#' smaller than say 8 observations create stability problems due to 
-#' overfitting. This is espcially when the order of the fitting polynomial is 
-#' large.
-#' @param lags An integer indicating the maximum number of lags to include in the analysis.
-#' @param direction A character string indicating a positive ('p') or negative ('n') lag.
-#' @import Rcpp
-#' @useDynLib fractalRegression
-#' @export
-#'
-#' @details Mathematical treatment of the MLRA algorithm and its performance can be found in Kristoufek (2015) and Likens et al. (2019).
-#'
-#' Use of the direction parameter specifies whether the scale-wise \eqn{\beta} coefficients for positive or negative lags will be estimated.  
-#'
-#' Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
-#' Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
-#'
-#' @return The object returned from the mlra() function is a list containing \code{betas} the \eqn{\beta} coefficients for each lag at each of the scales. 
-#'
-#'
-#' @references
-#'
-#' Kristoufek, L. (2015). Detrended fluctuation analysis as a regression framework: Estimating dependence at different scales. Physical Review E, 91(2), 022802.
-#'
-#' Likens, A. D., Amazeen, P. G., West, S. G., & Gibbons, C. T. (2019). Statistical properties of Multiscale Regression Analysis: Simulation and application to human postural control. Physica A: Statistical Mechanics and its Applications, 532, 121580.
-#'
-#' @examples
-#'
-#' 
-#' # Here is a simple example for running MLRA using a white noise and pink noise time series.
-#' # For more detailed examples, see the vignette. 
-#' 
-#' noise <- rnorm(5000)
-#' 
-#' pink.noise <- fgn_sim(n = 5000, H = 0.9)
-#'
-#' scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.1)
-#' 
-#' mlra.out <- mlra(
-#'     x = noise, 
-#'     y = pink.noise, 
-#'     order = 1, 
-#'     scales = scales, 
-#'     lags = 100, direction = 'p')
-#' 
-#'
-#'
+NULL
+
 mlra <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_mlra', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }

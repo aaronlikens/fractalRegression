@@ -5,6 +5,17 @@ using namespace Rcpp;
 arma::vec win_sums(arma::vec x, uint window);
 arma::vec fitting(arma::vec x, arma::vec y);
 
+//' Multifractal Analysis Chhabra-Jensen Method
+//'
+//' Fast function for computing multifractal analysis using a lesser-known method
+//' for estimating the family of long-range temporal correlations or scaling 
+//' exponents in time series data. This is also a form of multifractal 
+//' analysis that indicates the degree of interaction across temporal scales.
+//' @param Timeseries is a real valued time series
+//' @param qValues real valued vector of q-orders
+//' @param scales unsigned integer vector of scales to be resolved
+//' @export
+
 // [[Rcpp::export]]
 List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
 
