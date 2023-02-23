@@ -2,7 +2,7 @@
 #include <RcppArmadillo.h>
 using namespace Rcpp;
 
-arma::vec win_sums(arma::vec x, uint window);
+arma::vec win_sums(arma::vec x, unsigned int window);
 arma::vec fitting(arma::vec x, arma::vec y);
 
 //' Multifractal Analysis Chhabra-Jensen Method
@@ -46,7 +46,7 @@ List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
     for (unsigned int j = 0; j < ns; ++j){
 
       // determine how many windows we will have at this scale
-      uint window = pow(2, scales(j));
+      unsigned int window = pow(2, scales(j));
 
       //break the time series into windows & sum
       arma::vec ps = win_sums(Timeseries, window);
@@ -105,14 +105,14 @@ List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
 
 // divide time series into windows and compute the sum of each window;
 // [[Rcpp::export]]
-arma::vec win_sums(arma::vec x, uint window){
+arma::vec win_sums(arma::vec x, unsigned int window){
   arma::uword winsize = floor(x.n_elem/window);
   arma::uword nwindows = window;
   arma::vec out(nwindows);
   arma::uword start= 0;
   arma::uword stop = winsize-1;
   
-  for (uint i = 0; i < nwindows; i++){
+  for (unsigned int i = 0; i < nwindows; i++){
     out(i) = arma::accu(x.rows(start,stop));
     start += winsize;
     stop += winsize;

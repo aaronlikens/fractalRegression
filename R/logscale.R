@@ -11,7 +11,7 @@
 #' @return A vector of of logarithmically spaced scales. 
 #' 
 #' @examples
-#' scales <- logspace(scale_min = 16, scale_max = 1024, scale_ratio = 2)
+#' scales <- logscale(scale_min = 16, scale_max = 1024, scale_ratio = 2)
 #' 
 #' @export
 logscale = function(scale_min, scale_max, scale_ratio){

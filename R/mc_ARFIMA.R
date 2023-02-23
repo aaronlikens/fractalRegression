@@ -15,13 +15,13 @@
 #' memory.
 #' @param d4 is a numeric fractional difference parameter for y specifying long term 
 #' memory.
-#' @param alpha
-#' @param beta
-#' @param delta
-#' @param gamma
-#' @param theta
-#' @param theta1
-#' @param theta2
+#' @param alpha see Kristoufek (2013) for details.
+#' @param beta see Kristoufek (2013) for details.
+#' @param delta see Kristoufek (2013) for details.
+#' @param gamma see Kristoufek (2013) for details.
+#' @param theta see Kristoufek (2013) for details.
+#' @param theta1 see Kristoufek (2013) for details.
+#' @param theta2 see Kristoufek (2013) for details.
 #'
 #'
 #'

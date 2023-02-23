@@ -58,7 +58,7 @@ noise <- rnorm(5000)
 
 pink.noise <- fgn_sim(n = 5000, H = 0.9)
 
-scales <- ifultools::logScale(scale.min = 10, scale.max = 1250, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1250, scale_ratio = 1.1)
 
 dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 
@@ -69,6 +69,4 @@ dcca.out <- dcca(noise, pink.noise, order = 1, scales = scales)
 Podobnik, B., & Stanley, H. E. (2008). Detrended cross-correlation analysis: a new method for analyzing two nonstationary time series. Physical review letters, 100(8), 084102.
 
 Zebende, G. F. (2011). DCCA cross-correlation coefficient: Quantifying level of cross-correlation. Physica A: Statistical Mechanics and its Applications, 390(4), 614-618.
-
-//'
 }

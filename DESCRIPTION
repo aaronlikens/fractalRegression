@@ -1,8 +1,8 @@
 Package: fractalRegression
 Type: Package
 Title: Performs Fractal Analysis and Fractal Regression
-Version: 1.0
-Date: 2021-11-04
+Version: 1.1
+Date: 2022-11-10
 Authors@R:
   c(person(given = "Aaron",
              family = "Likens",
@@ -16,11 +16,11 @@ Authors@R:
 Description: Various functions for performing fractal and multifractal analysis including performing fractal regression. Please refer to Peng and colleagues (1994) <doi:10.1103/physreve.49.1685>, Kantelhardt and colleagues (2002)<doi:10.1016/S0378-4371(02)01383-3>, and Likens and colleagues (2019) <doi:10.1016/j.physa.2019.121580>.
 License: GPL (>= 3)
 Depends: R (>= 3.5.0)
-Suggests: knitr, markdown, rmarkdown, ggplot2, crqa, MFDFA, fracdiff, tseries, fields, ifultools, gridExtra, qpdf
+Suggests: knitr, markdown, rmarkdown, ggplot2, crqa, MFDFA, fracdiff, tseries, fields, gridExtra, qpdf
 Encoding: UTF-8
 Imports: Rcpp (>= 1.0.0), colorRamps
 LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 RoxygenNote: 7.2.3
 NeedsCompilation: yes
-Packaged: 2021-11-04 16:05:33 UTC; aaronlikens
+Packaged: 2022-11-10 10:07:00 UTC; aaronlikens
