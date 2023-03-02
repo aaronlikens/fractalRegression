@@ -10,7 +10,6 @@ arma::vec polyfit(arma::vec x, int order);
 arma::mat detrend_var(arma::mat x, int order);
 
 //' Multiscale Lagged Regression Analysis
-<<<<<<< HEAD
  //'
  //' Fast function for computing multiscale lagged regression analysis (MLRA) on long time series. Combining DFA with ordinary least square regression, MLRA
  //' is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables at different time-scales and temporal lags. 
