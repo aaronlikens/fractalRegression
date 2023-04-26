@@ -31,9 +31,9 @@ evolving Hurst exponent involving a sinusoidal change.
 }
 \examples{
 
-t <- 1:2048
+t <- 1:1024
 Ht <- 0.5+0.5*(sin(0.0025*pi*t))
-sim <- mBm_mGn(2048,Ht)
+sim <- mBm_mGn(1024,Ht)
 
 
 

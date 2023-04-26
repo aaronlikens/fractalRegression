@@ -21,6 +21,8 @@
 #' displaying multiscale regression coefficient trajectories
 #' @param loess.ci logical indicating whether a loess fit should be used to smooth 
 #' confidence intervals
+#' @importFrom graphics abline arrows legend lines matplot par points text
+#' @importFrom stats arima.sim coef lm loess predict quantile
 #' @export
 mra.plot = function(betas, order = 1, ci = FALSE, iterations = NULL,
                     return.ci = FALSE, loess.beta = FALSE, loess.ci = FALSE){

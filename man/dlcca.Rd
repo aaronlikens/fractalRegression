@@ -3,7 +3,7 @@
 \name{dlcca}
 \alias{dlcca}
 \title{Multiscale Lagged Regression Anlaysis
-Fast function for computing MRA on long time series}
+Fast function for computing MLRA on long time series}
 \usage{
 dlcca(x, y, order, scales, lags, direction)
 }
@@ -28,5 +28,5 @@ The object returned from the dlcca() function is a list containing rho coefficie
 }
 \description{
 Multiscale Lagged Regression Anlaysis
-Fast function for computing MRA on long time series
+Fast function for computing MLRA on long time series
 }

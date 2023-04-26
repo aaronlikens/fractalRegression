@@ -47,8 +47,6 @@ Note that under conditions with linear and quadratic trends, Likens et al. (2019
 Using a polynomial detrending order of 2 or greater was shown to attenuate this bias.
 }
 \examples{
-
-
 # Here is a simple example for running MLRA using a white noise and pink noise time series.
 # For more detailed examples, see the vignette. 
 
@@ -64,6 +62,7 @@ mlra.out <- mlra(
     order = 1, 
     scales = scales, 
     lags = 100, direction = 'p')
+
 
 
 

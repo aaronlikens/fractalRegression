@@ -17,7 +17,7 @@
 #' @references Kantelhardt et al. (2002). Multifractal detrended fluctuation
 #' analys of nonstationary time series. Physica A: Statistical Mechanics and 
 #' its Applications, 87
-#' @import colorRamps
+#' @importFrom colorRamps blue2red
 #' @export
 mfdfa.plot = function(mf, do.surrogate,  nsurrogates = 19, return.ci = FALSE){
   if (length(mf) != 11){
@@ -35,8 +35,8 @@ mfdfa.plot = function(mf, do.surrogate,  nsurrogates = 19, return.ci = FALSE){
     
     
     # do better color coding using a ramp function
-    require(colorRamps)
-    cols = rev(blue2red(length(mf$q)))
+    # require(colorRamps)
+    cols = rev(colorRamps::blue2red(length(mf$q)))
     
     # plot q-order fluctuation function
     # matplot(log10(mf$scales), log10(mf$fq),type = 'p',

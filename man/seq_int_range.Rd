@@ -2,10 +2,17 @@
 % Please edit documentation in R/RcppExports.R
 \name{seq_int_range}
 \alias{seq_int_range}
-\title{Sequence of Integer ranges}
+\title{Sequence of Integer ranges
+Function that produces a sequece of integers that span a specific range}
 \usage{
 seq_int_range(start, stop)
 }
+\arguments{
+\item{start}{is a positive integer and gives the smallest value in the sequence}
+
+\item{stop}{is a positive integer and gives the largest value in a sequence}
+}
 \description{
 Sequence of Integer ranges
+Function that produces a sequece of integers that span a specific range
 }

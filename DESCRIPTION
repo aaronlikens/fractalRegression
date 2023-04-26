@@ -2,7 +2,7 @@ Package: fractalRegression
 Type: Package
 Title: Performs Fractal Analysis and Fractal Regression
 Version: 1.1
-Date: 2022-11-10
+Date: 2023-04-26
 Authors@R:
   c(person(given = "Aaron",
              family = "Likens",
@@ -23,4 +23,4 @@ LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 RoxygenNote: 7.2.3
 NeedsCompilation: yes
-Packaged: 2022-11-10 10:07:00 UTC; aaronlikens
+Packaged: 2023-04-26 08:55:00 UTC; aaronlikens

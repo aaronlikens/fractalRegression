@@ -15,7 +15,6 @@ arma::vec fitting(arma::vec x, arma::vec y);
 //' @param qValues real valued vector of q-orders
 //' @param scales unsigned integer vector of scales to be resolved
 //' @export
-
 // [[Rcpp::export]]
 List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
 

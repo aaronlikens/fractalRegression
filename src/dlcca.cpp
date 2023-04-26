@@ -10,7 +10,7 @@ arma::vec PolyFit(arma::vec x, int order);
 arma::mat Detrend_Var(arma::mat x, int order);
 
 //' Multiscale Lagged Regression Anlaysis
-//' Fast function for computing MRA on long time series
+//' Fast function for computing MLRA on long time series
 //' @param x is a real valued vector of time series data
 //' @param y is a real valued vector of time series data
 //' @param order is an integer indicating the polynomial order used for 

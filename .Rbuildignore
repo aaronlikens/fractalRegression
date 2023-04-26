@@ -5,3 +5,6 @@
 ^paper\.md$
 ^fractalRegression_vignette_files$
 ^paper_files$
+^fractalRegression\.Rcheck$
+^fractalRegression.*\.tar\.gz$
+^fractalRegression.*\.tgz$

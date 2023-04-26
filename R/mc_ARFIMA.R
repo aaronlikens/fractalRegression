@@ -79,7 +79,7 @@
 
 
 mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL,beta=NULL,delta=NULL,gamma=NULL,theta=NULL,theta1=NULL,theta2=NULL){
-  require(fracdiff)
+  # requireNamespace(fracdiff)
   # Correlated Noise
   if(process=='Noise_rho'){
   e1<-rnorm(n)
@@ -91,15 +91,15 @@ mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL
     e1<-rnorm(n)
     e<-rnorm(n)
     e2<-rho*e1+sqrt(1-rho^2)*e
-    x<-fracdiff.sim(n,d=d1,innov=e1)$series
-    y<-fracdiff.sim(n,d=d2,innov=e2)$series
+    x<-fracdiff::fracdiff.sim(n,d=d1,innov=e1)$series
+    y<-fracdiff::fracdiff.sim(n,d=d2,innov=e2)$series
     return(matrix(c(x,y),ncol=2))
   #ARFIMA and AR(1) processes with correlated innovations
   } else if(process=="ARFIMA_AR") {
     e1<-rnorm(n)
     e<-rnorm(n)
     e2<-rho*e1+sqrt(1-rho^2)*e
-    x<-fracdiff.sim(n,d=d1,innov=e1)$series
+    x<-fracdiff::fracdiff.sim(n,d=d1,innov=e1)$series
     y<-arima.sim(list(order=c(1,0,0),ar=theta),n,innov=e2)
     return(matrix(c(x,y),ncol=2))
 #Two AR(1) processes with correlated innovations
@@ -115,13 +115,13 @@ mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL
     er1<-rnorm(n)
     er<-rnorm(n)
     er2<-rho*er1+sqrt(1-rho^2)*er
-    x1<-fracdiff.sim(n,d=d1,innov=er1)$series
-    y1<-fracdiff.sim(n,d=d2,innov=er2)$series
+    x1<-fracdiff::fracdiff.sim(n,d=d1,innov=er1)$series
+    y1<-fracdiff::fracdiff.sim(n,d=d2,innov=er2)$series
     e<- matrix(c(x1,y1),ncol=2)
     e2<-e[,1]
     e3<-e[,2]
-    x<-alpha*fracdiff.sim(n,d=d1)$series+beta*e2
-    y<-gamma*e3+delta*fracdiff.sim(n,d=d4)$series
+    x<-alpha*fracdiff::fracdiff.sim(n,d=d1)$series+beta*e2
+    y<-gamma*e3+delta*fracdiff::fracdiff.sim(n,d=d4)$series
     return(matrix(c(x,y),ncol=2))
     #MC-ARFIMA process with LRC and SRCC (Model 2)
   } else if(process=="Mixed_ARFIMA_AR") {
@@ -133,8 +133,8 @@ mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL
     e<-matrix(c(x1,y1),ncol=2)
     e2<-e[,1]
     e3<-e[,2]
-    x<-alpha*fracdiff.sim(n,d=d1)$series+beta*e2
-    y<-gamma*e3+delta*fracdiff.sim(n,d=d2)$series
+    x<-alpha*fracdiff::fracdiff.sim(n,d=d1)$series+beta*e2
+    y<-gamma*e3+delta*fracdiff::fracdiff.sim(n,d=d2)$series
     return(matrix(c(x,y),ncol=2))
   #MC-ARFIMA process with LRC and simple correlation (Model 3)
     } else {
@@ -144,8 +144,8 @@ mc_ARFIMA <- function(process,n, rho, d1=NULL,d2=NULL,d3=NULL,d4=NULL,alpha=NULL
       e<-matrix(c(er1,er2),ncol=2)
       e2<-e[,1]
       e3<-e[,2]
-      x<-alpha*fracdiff.sim(n,d=d1)$series+beta*e2
-      y<-gamma*e3+delta*fracdiff.sim(n,d=d2)$series
+      x<-alpha*fracdiff::fracdiff.sim(n,d=d1)$series+beta*e2
+      y<-gamma*e3+delta*fracdiff::fracdiff.sim(n,d=d2)$series
       return(matrix(c(x,y),ncol=2))
     }
 

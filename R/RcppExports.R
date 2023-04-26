@@ -188,7 +188,7 @@ dfa <- function(x, order, verbose, scales, scale_ratio = 2) {
 }
 
 #' Multiscale Lagged Regression Anlaysis
-#' Fast function for computing MRA on long time series
+#' Fast function for computing MLRA on long time series
 #' @param x is a real valued vector of time series data
 #' @param y is a real valued vector of time series data
 #' @param order is an integer indicating the polynomial order used for 
@@ -208,27 +208,45 @@ dlcca <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_dlcca', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }
 
+#' Polynomial Residuals
+#' Function that fits a polynomial and returns the residuals
+#' @param yr is a real valued vector 
+#' @param m is the detrending order
 #' @export
 poly_residuals <- function(yr, m) {
     .Call('_fractalRegression_poly_residuals', PACKAGE = 'fractalRegression', yr, m)
 }
 
+#' Simplef bivariate regression written in c++
+#' @param xs a real valued column vector 
+#' @param yr is a real valued column vector
 #' @export
 lm_c <- function(xs, yr) {
     .Call('_fractalRegression_lm_c', PACKAGE = 'fractalRegression', xs, yr)
 }
 
+#' Integer Sequence
+#' Function that produces a sequence of integers from 1 to N
+#' @param length is a positive integer that will produce a sequence from 1:length
 #' @export
 seq_int <- function(length) {
     .Call('_fractalRegression_seq_int', PACKAGE = 'fractalRegression', length)
 }
 
 #' Sequence of Integer ranges
+#' Function that produces a sequece of integers that span a specific range
+#' @param start is a positive integer and gives the smallest value in the sequence
+#' @param stop is a positive integer and gives the largest value in a sequence
 #' @export
 seq_int_range <- function(start, stop) {
     .Call('_fractalRegression_seq_int_range', PACKAGE = 'fractalRegression', start, stop)
 }
 
+#' Detrended Covariance
+#' Functional that returns the detrended covariance between two vectors
+#' @param x a real valued column vector 
+#' @param y is a real valued column vector
+#' @param m is the detrending order
 #' @export
 detrend_cov <- function(x, y, m) {
     .Call('_fractalRegression_detrend_cov', PACKAGE = 'fractalRegression', x, y, m)
@@ -342,8 +360,6 @@ mfdfa <- function(x, q, order, scales, scale_ratio) {
 #' @param qValues real valued vector of q-orders
 #' @param scales unsigned integer vector of scales to be resolved
 #' @export
-NULL
-
 mfdfa_cj <- function(Timeseries, qValues, scales) {
     .Call('_fractalRegression_mfdfa_cj', PACKAGE = 'fractalRegression', Timeseries, qValues, scales)
 }
@@ -357,8 +373,66 @@ fitting <- function(x, y) {
 }
 
 #' Multiscale Lagged Regression Analysis
-NULL
-
+#'
+#' Fast function for computing multiscale lagged regression analysis (MLRA) on long time series. Combining DFA with ordinary least square regression, MLRA
+#' is a form of fractal regression that can be used to estimate asymmetric and multiscale regression coefficients between two variables at different time-scales and temporal lags. 
+#'
+#' @param x A real valued vector (i.e., time series data) to be analyzed.
+#' @param y A real valued vector (i.e., time series data) to be analyzed.
+#' @param order is an integer indicating the polynomial order used for 
+#' detrending the local windows (e.g, 1 = linear, 2 = quadratic, etc.). There 
+#' is a not pre-determined limit on the order of the polynomial order but the 
+#' user should avoid using a large polynomial on small windows. This can result
+#' in overfitting and non-meaningful estimates. 
+#' @param scales An integer vector of scales over which to compute correlation. 
+#' Unlike univariate DFA, MRA does not require that scales be in log units.
+#' Scale intervals can be sequential, for example, when the analysis is 
+#' exploratory and no a priori hypotheses have been made about the scale of 
+#' correlation. A small subset of targeted scales may also be investigated 
+#' where scale-specific research questions exist. We have found that windows
+#' smaller than say 8 observations create stability problems due to 
+#' overfitting. This is espcially when the order of the fitting polynomial is 
+#' large.
+#' @param lags An integer indicating the maximum number of lags to include in the analysis.
+#' @param direction A character string indicating a positive ('p') or negative ('n') lag.
+#' @import Rcpp
+#' @useDynLib fractalRegression
+#'
+#' @details Mathematical treatment of the MLRA algorithm and its performance can be found in Kristoufek (2015) and Likens et al. (2019).
+#'
+#' Use of the direction parameter specifies whether the scale-wise \eqn{\beta} coefficients for positive or negative lags will be estimated.  
+#'
+#' Note that under conditions with linear and quadratic trends, Likens et al. (2019) found that there was a systematic positive bias in the \eqn{\beta} estimates for larger scales.
+#' Using a polynomial detrending order of 2 or greater was shown to attenuate this bias. 
+#'
+#' @return The object returned from the mlra() function is a list containing \code{betas} the \eqn{\beta} coefficients for each lag at each of the scales. 
+#' @references
+#'
+#' Kristoufek, L. (2015). Detrended fluctuation analysis as a regression framework: Estimating dependence at different scales. Physical Review E, 91(2), 022802.
+#'
+#' Likens, A. D., Amazeen, P. G., West, S. G., & Gibbons, C. T. (2019). Statistical properties of Multiscale Regression Analysis: Simulation and application to human postural control. Physica A: Statistical Mechanics and its Applications, 532, 121580.
+#'
+#' @examples
+#' # Here is a simple example for running MLRA using a white noise and pink noise time series.
+#' # For more detailed examples, see the vignette. 
+#' 
+#' noise <- rnorm(5000)
+#' 
+#' pink.noise <- fgn_sim(n = 5000, H = 0.9)
+#'
+#' scales <- logscale(scale_min = 10, scale_max = 1250, scale_ratio = 1.1)
+#' 
+#' mlra.out <- mlra(
+#'     x = noise, 
+#'     y = pink.noise, 
+#'     order = 1, 
+#'     scales = scales, 
+#'     lags = 100, direction = 'p')
+#' 
+#' 
+#' 
+#' 
+#' @export
 mlra <- function(x, y, order, scales, lags, direction) {
     .Call('_fractalRegression_mlra', PACKAGE = 'fractalRegression', x, y, order, scales, lags, direction)
 }

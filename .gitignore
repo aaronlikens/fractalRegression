@@ -19,3 +19,6 @@ src/polyDetrend.o
 src/poly_residuals.o
 src/seg_int.o
 src/**.o
+fractalRegression.Rcheck/
+fractalRegression*.tar.gz
+fractalRegression*.tgz

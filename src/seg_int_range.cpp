@@ -3,6 +3,7 @@
 using namespace Rcpp;
 
 
+
 arma::uvec seq_int_range(arma::uword start, arma::uword stop){
   arma::uvec out(stop - start + 1);
   arma::uword counter = 0;
