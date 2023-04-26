@@ -55,7 +55,7 @@ List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
 
       //calculation of Md
       Md(i, j) = log10(Nor); //%not accounting for q between 0 and 1
-      if (q <=1 & q > 0){
+      if (q <=1 && q > 0){
         Md(i, j) = arma::accu(p % arma::log10(p))/Nor;
       }
       
@@ -74,7 +74,7 @@ List mfdfa_cj(arma::vec Timeseries, arma::vec qValues, arma::uvec scales) {
     alpha(i) = b_Ma(0);
     falpha(i) = b_Mf(0);
     Dq(i) = b_Md(0)/(q - 1);
-    if (q <= 1 & q > 0){
+    if (q <= 1 && q > 0){
       Dq(i) = b_Md(0);
     }
 
