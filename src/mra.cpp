@@ -120,7 +120,7 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
         //choose window size
         int window = scales[i];
         //re-/initialize variables to hold input for a given scale
-        int count = 0;
+        // int count = 0;
         arma::ivec indx = seq_len(window);
         indx = indx-1;
         arma::vec var_cov(2);
@@ -136,7 +136,7 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
             f2x[i] = f2x[i] + var_cov[0];
             f2y[i] = f2y[i] + var_cov[1];
             f2xy[i] = f2xy[i] + var_cov[2];
-            count = count + 1;
+            // count = count + 1;
             indx = indx + window;
         }
 
@@ -151,11 +151,14 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
         indx = indx-1;
         
         //double beta = betas[i];
+        double temp = 0.0;
         for (int j = 0; j < number_of_blocks; ++j){
           start = indx(0);
           stop = indx(indx.n_elem-1);
-            f2u[i] = f2u[i] + arma::accu(arma::pow(poly_residuals(ut.subvec(start, stop), order),2))/indx.n_elem-1;
-            indx = indx + window;
+          temp = arma::accu(arma::pow(poly_residuals(ut.subvec(start, stop), order),2));
+          temp = temp/(indx.n_elem-1);
+          f2u[i] = f2u[i] + temp;
+          indx = indx + window;
         }
         f2u[i] = f2u[i]/(N-window);
         se_betas[i] = sqrt(f2u[i]/(f2x[i]*(window-1)));
@@ -169,8 +172,11 @@ List mra(arma::vec x, arma::vec y, int order, arma::ivec scales){
                         Named("y") = y,
                         Named("scales") = scales, 
                         Named("betas") = betas,
-                        Named("r2") = r2, 
-                        Named("t_observed") = t_observed);
+                        Named("f2x") = f2x,
+                        Named("f2y") = f2y,
+                        Named("f2xy") = f2xy,
+                        Named("f2u") = f2u,
+                        Named("r2") = r2);
 }
 
 
